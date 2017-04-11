@@ -1,0 +1,99 @@
+{
+  "project_info": {
+    "project_number": "854980111924",
+    "firebase_url": "https://smart-surveillance-18a2e.firebaseio.com",
+    "project_id": "smart-surveillance-18a2e",
+    "storage_bucket": "smart-surveillance-18a2e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:854980111924:android:d8408c635be545a0",
+        "android_client_info": {
+          "package_name": "id.edutech.smartsurveillance"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "854980111924-u6hbu5rn6ekc2qkttsug1hlaa0ihf4jq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "id.edutech.smartsurveillance",
+            "certificate_hash": "1beb9a118b811a751668159498da1a3222d4a953"
+          }
+        },
+        {
+          "client_id": "854980111924-rnfdptdekmc0ehnmtk9okjnslnoikcd5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJNVrR7HLLjVuJLSrQcLXWTZAVHi1ZPXk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "854980111924-rnfdptdekmc0ehnmtk9okjnslnoikcd5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:854980111924:android:b5dc5e7f835f2b1c",
+        "android_client_info": {
+          "package_name": "info.edutech.smartsurveillance"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "854980111924-fcrog7stbkk15lm8lgap9on1u9h58c63.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "info.edutech.smartsurveillance",
+            "certificate_hash": "1beb9a118b811a751668159498da1a3222d4a953"
+          }
+        },
+        {
+          "client_id": "854980111924-rnfdptdekmc0ehnmtk9okjnslnoikcd5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJNVrR7HLLjVuJLSrQcLXWTZAVHi1ZPXk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "854980111924-rnfdptdekmc0ehnmtk9okjnslnoikcd5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
