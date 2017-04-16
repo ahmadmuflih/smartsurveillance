@@ -4,9 +4,11 @@ package info.edutech.smartsurveillance.app;
  * Created by Baso on 2/10/2017.
  */
 public class Config {
-    private static String IP_ADDRESS = "http://192.168.0.99/smartsurveillance/";
+    private static String IP_ADDRESS = "http://192.168.0.106/smartsurveillance/";
     private static String DOMAIN = "edutechteam.tk/smartsurveillance/";
     private static String WIFI_NAME = "";
+    private static String TOKEN = "token";
+    private static String PRIVATE_KEY = "8yTLJV9VYU";
     // global topic to receive app wide push notifications
     public static final String TOPIC_GLOBAL = "global";
 
@@ -22,5 +24,12 @@ public class Config {
 
     public static String getBaseUrl(){
         return IP_ADDRESS;
+    }
+    public static String getPrivateKey(){
+        return PRIVATE_KEY;
+    }
+
+    public static String getToken() {
+        return TOKEN;
     }
 }

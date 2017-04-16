@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import info.edutech.smartsurveillance.R;
 import info.edutech.smartsurveillance.adapter.KontakAdapter;
+import info.edutech.smartsurveillance.app.Config;
 import info.edutech.smartsurveillance.model.User;
 import info.edutech.smartsurveillance.model.Validation;
 import info.edutech.smartsurveillance.service.APIService;
@@ -205,7 +206,7 @@ public class SMSSettingActivity extends AppCompatActivity {
     private void saveSMS(){
         final Boolean sendWhenFire = checkSMSApi.isChecked(), sendWhenMotion = checkSMSManusia.isChecked();
         final String smsFire = textSMSApi.getText().toString(),smsMotion=textSMSManusia.getText().toString();
-        Call<Validation> setSmsCall = APIService.service.setSMSConfig("testing",sendWhenFire,sendWhenMotion,smsFire,smsMotion);
+        Call<Validation> setSmsCall = APIService.service.setSMSConfig(Config.getPrivateKey(),sendWhenFire,sendWhenMotion,smsFire,smsMotion);
         setSmsCall.enqueue(new Callback<Validation>() {
             @Override
             public void onResponse(Call<Validation> call, Response<Validation> response) {
@@ -248,7 +249,7 @@ public class SMSSettingActivity extends AppCompatActivity {
         addContactDialog.show();
     }
     private void addContactToRealm(final String name, final String phoneNumber){
-        Call<Validation> addUserCall = APIService.service.addUser("testing",name,phoneNumber);
+        Call<Validation> addUserCall = APIService.service.addUser(Config.getPrivateKey(),name,phoneNumber);
         addUserCall.enqueue(new Callback<Validation>() {
             @Override
             public void onResponse(Call<Validation> call, Response<Validation> response) {

@@ -245,9 +245,5 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        realm.close();
-    }
+
 }

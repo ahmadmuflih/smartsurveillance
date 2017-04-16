@@ -1,5 +1,8 @@
 package info.edutech.smartsurveillance.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Date;
 
 import io.realm.RealmObject;
@@ -9,10 +12,18 @@ import io.realm.annotations.PrimaryKey;
  * Created by Baso on 2/21/2017.
  */
 public class Capture extends RealmObject {
+    @SerializedName("id")
+    @Expose
     @PrimaryKey
     private int id;
+    @SerializedName("url")
+    @Expose
     private String url;
+    @SerializedName("image_name")
+    @Expose
     private String imageName;
+    @SerializedName("date")
+    @Expose
     private Date date;
 
     public Capture() {

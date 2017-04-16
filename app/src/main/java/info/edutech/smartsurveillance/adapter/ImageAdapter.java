@@ -3,6 +3,7 @@ package info.edutech.smartsurveillance.adapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -23,28 +25,33 @@ import java.util.Date;
 
 import info.edutech.smartsurveillance.MyApplication;
 import info.edutech.smartsurveillance.R;
+import info.edutech.smartsurveillance.app.Config;
 import info.edutech.smartsurveillance.model.Capture;
+import io.realm.OrderedRealmCollection;
 import io.realm.RealmList;
+import io.realm.RealmRecyclerViewAdapter;
 
 /**
  * Created by Baso on 10/20/2016.
  */
-public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.Holder> {
+public class ImageAdapter extends RealmRecyclerViewAdapter<Capture,ImageAdapter.Holder> {
     private Context mContext;
-    private RealmList<Capture> captures;
     private ArrayList<Boolean> displays;
     private OnPhotoSelectedListener onPhotoSelectedListener;
     private String BASE_URL;
-    public ImageAdapter(Context mContext, RealmList<Capture> captures, String BASE_URL, OnPhotoSelectedListener onPhotoSelectedListener) {
-        this.mContext = mContext;
-        this.captures = captures;
+
+    public ImageAdapter(@Nullable OrderedRealmCollection<Capture> data, Context mContext,OnPhotoSelectedListener onPhotoSelectedListener) {
+        super(data, true);
+        setHasStableIds(true);
+        this.BASE_URL= Config.getBaseUrl();
         this.onPhotoSelectedListener = onPhotoSelectedListener;
-        this.BASE_URL=BASE_URL;
+        this.mContext = mContext;
         setDisplays(0);
     }
+
     private void setDisplays(int position){
         displays = new ArrayList<>();
-        for(int i = 0; i < captures.size(); i++){
+        for(int i = 0; i < getItemCount(); i++){
             if(i==position)
                 displays.add(true);
             else
@@ -64,76 +71,89 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.Holder> {
 
     @Override
     public void onBindViewHolder(final Holder holder, final int position) {
-        final Capture photo = captures.get(position);
+        final Capture photo = getItem(position);
+
         final String path = mContext.getFilesDir().getAbsolutePath() + "/" + photo.getImageName();
         File file = new File(path);
         Log.d("File",file.exists()+" "+path);
-        if(displays.get(position)==true)
-            holder.background.setVisibility(View.VISIBLE);
-        else
-            holder.background.setVisibility(View.INVISIBLE);
-        if(file.exists()){
-            Picasso.with(mContext)
-                    .load(file)
-                    .placeholder(R.drawable.loading)
-                    .noFade()
-                    .into(holder.imageView);
-        }
-        else{
-            Picasso.with(mContext)
-                    .load(BASE_URL+photo.getUrl())
-                    .placeholder(R.drawable.loading)
-                    .noFade()
-                    .into(new Target() {
-                        @Override
-                        public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
-                            holder.imageView.setImageBitmap(bitmap);
-                            new Thread(new Runnable() {
-                                public void run() {
-                                    File file = new File(path);
-                                    FileOutputStream fos;
-                                    try {
-                                        if(!file.exists())
-                                            file.createNewFile();
-                                        fos = new FileOutputStream(file);
-                                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-                                        fos.flush();
-                                        fos.close();
+        Log.d("ID", ""+photo.getId());
+        try {
+            if (displays.get(position) == true)
+                holder.background.setVisibility(View.VISIBLE);
+            else
+                holder.background.setVisibility(View.INVISIBLE);
+            if (file.exists()) {
+                Picasso.with(mContext)
+                        .load(file)
+                        .placeholder(R.drawable.loading)
+                        .fit()
+                        .centerCrop()
+                        .noFade()
+                        .into(holder.imageView);
+            } else {
+                Picasso.with(mContext)
+                        .load(BASE_URL + photo.getUrl())
+                        .placeholder(R.drawable.loading)
+                        .resize(300,300)
+                        .centerCrop()
+                        .noFade()
+                        .into(new Target() {
+                            @Override
+                            public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+                                holder.imageView.setImageBitmap(bitmap);
+                                new Thread(new Runnable() {
+                                    public void run() {
+                                        File file = new File(path);
+                                        FileOutputStream fos;
+                                        try {
+                                            if (!file.exists())
+                                                file.createNewFile();
+                                            fos = new FileOutputStream(file);
+                                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                                            fos.flush();
+                                            fos.close();
 
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
                                     }
-                                }
 
-                            }).start();
+                                }).start();
+                            }
+
+                            @Override
+                            public void onBitmapFailed(Drawable errorDrawable) {
+
+                            }
+
+                            @Override
+                            public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                            }
+                        });
+            }
+            holder.textView.setText(getDate(photo.getDate()) + "");
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (onPhotoSelectedListener != null) {
+                        onPhotoSelectedListener.onSelected(photo);
+                        int index = getSelectedIndex();
+                        if (index != position) {
+                            setDisplays(position);
+                            notifyItemChanged(index);
+                            notifyItemChanged(position);
                         }
-
-                        @Override
-                        public void onBitmapFailed(Drawable errorDrawable) {
-
-                        }
-
-                        @Override
-                        public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                        }
-                    });
-        }
-        holder.textView.setText(getDate(photo.getDate())+"");
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(onPhotoSelectedListener != null) {
-                    onPhotoSelectedListener.onSelected(photo);
-                    int index=getSelectedIndex();
-                    if(index!=position) {
-                        setDisplays(position);
-                        notifyItemChanged(position);
-                        notifyItemChanged(index);
                     }
                 }
-            }
-        });
+            });
+        }
+        catch (ArrayIndexOutOfBoundsException e){
+            e.printStackTrace();
+        }
+        catch (IndexOutOfBoundsException e){
+            e.printStackTrace();
+        }
     }
     public String getDate(Date date){
         Date newDate = new Date();
@@ -162,13 +182,10 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.Holder> {
     }
     @Override
     public long getItemId(int position) {
-        return captures.get(position).getId();
+        return getItem(position).getId();
     }
 
-    @Override
-    public int getItemCount() {
-        return captures.size();
-    }
+
 
     private int getSelectedIndex(){
         for(int i = 0; i<displays.size();i++){

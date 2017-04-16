@@ -19,20 +19,24 @@ import android.widget.Toast;
 
 import com.google.firebase.messaging.FirebaseMessaging;
 
-import info.edutech.smartsurveillance.MyApplication;
 import info.edutech.smartsurveillance.R;
 import info.edutech.smartsurveillance.adapter.ImageAdapter;
 import info.edutech.smartsurveillance.app.Config;
 import info.edutech.smartsurveillance.model.Capture;
+import info.edutech.smartsurveillance.model.CaptureService;
+import info.edutech.smartsurveillance.service.APIService;
 import info.edutech.smartsurveillance.util.NotificationUtils;
 import io.realm.Realm;
-import io.realm.RealmList;
 import io.realm.RealmResults;
+import io.realm.Sort;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
-import java.util.Collections;
+import java.util.List;
 
 public class GalleryActivity extends AppCompatActivity implements ImageAdapter.OnPhotoSelectedListener {
 
@@ -42,7 +46,8 @@ public class GalleryActivity extends AppCompatActivity implements ImageAdapter.O
     private ImageView imageView;
     private RecyclerView recyclerView;
     private final String BASE_URL=Config.getBaseUrl();
-
+    Realm realm;
+    ImageAdapter imageAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,15 +63,10 @@ public class GalleryActivity extends AppCompatActivity implements ImageAdapter.O
         imageView = (ImageView) findViewById(R.id.foto);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
-        Realm realm = Realm.getDefaultInstance();
-        RealmResults<Capture> capture = realm.where(Capture.class).findAll();
+        realm = Realm.getDefaultInstance();
+        RealmResults<Capture> capture = realm.where(Capture.class).findAllSorted("id", Sort.DESCENDING);
 
-
-        RealmList <Capture> results = new RealmList<>();
-        results.addAll(capture.subList(0, capture.size()));
-        Collections.reverse(results);
-        Log.e("REALM","SIZE : "+results.size());
-        ImageAdapter imageAdapter = new ImageAdapter(getApplicationContext(),results,BASE_URL,this);
+        imageAdapter = new ImageAdapter(capture,getApplicationContext(),this);
         recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(),3));
         recyclerView.setAdapter(imageAdapter);
         recyclerView.setFocusable(false);
@@ -93,13 +93,53 @@ public class GalleryActivity extends AppCompatActivity implements ImageAdapter.O
                 }
             }
         };
-        if(results.size()!=0)
-            setImageView(results.get(0));
+        if(capture.size()!=0)
+            setImageView(capture.get(0));
         displayFirebaseRegId();
-
+        syncCapture();
     }
+    
+    private void syncCapture(){
+        Call<CaptureService> captureServiceCall = APIService.service.getCaptures(Config.getPrivateKey());
+        captureServiceCall.enqueue(new Callback<CaptureService>() {
+            @Override
+            public void onResponse(Call<CaptureService> call, Response<CaptureService> response) {
+                if(response.isSuccessful()){
+                    CaptureService captureResponse = response.body();
+                    if(captureResponse.getStatus().equals("success")){
+                        final List<Capture> captures = captureResponse.getData();
+                        realm.executeTransactionAsync(new Realm.Transaction() {
+                            @Override
+                            public void execute(Realm realm) {
+                                realm.copyToRealmOrUpdate(captures);
+                            }
+                        }, new Realm.Transaction.OnSuccess(){
+
+                            @Override
+                            public void onSuccess() {
+
+                            }
+                        });
+                    }
+                    else{
+                        Toast.makeText(getApplicationContext(), captureResponse.getError(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "Gagal!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CaptureService> call, Throwable t) {
+                t.printStackTrace();
+                Toast.makeText(getApplicationContext(), "Failed! Check yourr internet connection!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    
     private void setImageView(Capture capture){
-        File file = new File(capture.getPath());
+        File file = new File(getApplicationContext().getFilesDir().getAbsolutePath() + "/" + capture.getImageName());
         if(file.exists()){
             Picasso.with(getApplicationContext())
                     .load(file)

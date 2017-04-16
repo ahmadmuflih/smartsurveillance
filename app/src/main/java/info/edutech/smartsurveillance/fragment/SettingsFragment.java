@@ -87,7 +87,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
         /*------------ Sync -------------*/
 
-        Call<Validation> getCameraCall = APIService.service.getCameraConfig("testing");
+        Call<Validation> getCameraCall = APIService.service.getCameraConfig(Config.getPrivateKey());
         getCameraCall.enqueue(new Callback<Validation>() {
             @Override
             public void onResponse(Call<Validation> call, Response<Validation> response) {
@@ -110,7 +110,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 //Toast.makeText(getActivity(), "Gagal2", Toast.LENGTH_SHORT).show();
             }
         });
-        Call<Validation> getLockCall = APIService.service.getLockConfig("testing");
+        Call<Validation> getLockCall = APIService.service.getLockConfig(Config.getPrivateKey());
         getLockCall.enqueue(new Callback<Validation>() {
             @Override
             public void onResponse(Call<Validation> call, Response<Validation> response) {
@@ -144,7 +144,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         });
 
 
-        Call<ValidationAlarm> getAlarmCall = APIService.service.getAlarmConfig("testing");
+        Call<ValidationAlarm> getAlarmCall = APIService.service.getAlarmConfig(Config.getPrivateKey());
         getAlarmCall.enqueue(new Callback<ValidationAlarm>() {
             @Override
             public void onResponse(Call<ValidationAlarm> call, Response<ValidationAlarm> response) {
@@ -175,7 +175,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        Call<ValidationSMS> getSMSCall = APIService.service.getSMSConfig("testing");
+        Call<ValidationSMS> getSMSCall = APIService.service.getSMSConfig(Config.getPrivateKey());
         getSMSCall.enqueue(new Callback<ValidationSMS>() {
             @Override
             public void onResponse(Call<ValidationSMS> call, Response<ValidationSMS> response) {
@@ -240,7 +240,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                             case 4:lockVal=60;break;
                         }
 
-                        Call<Validation> setLockCall = APIService.service.setLockConfig("testing",lockVal);
+                        Call<Validation> setLockCall = APIService.service.setLockConfig(Config.getPrivateKey(),lockVal);
                         setLockCall.enqueue(new Callback<Validation>() {
                             @Override
                             public void onResponse(Call<Validation> call, Response<Validation> response) {
@@ -289,7 +289,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         final int quality = radioGroup.indexOfChild(editCamera.findViewById(radioGroup.getCheckedRadioButtonId()))+1;
-                        Call<Validation> setCameraCall = APIService.service.setCameraConfig("testing",quality);
+                        Call<Validation> setCameraCall = APIService.service.setCameraConfig(Config.getPrivateKey(),quality);
                         setCameraCall.enqueue(new Callback<Validation>() {
                             @Override
                             public void onResponse(Call<Validation> call, Response<Validation> response) {
@@ -373,7 +373,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                             case 2: alarmEnabled=true;beepFire=false;beepMotion=true;break;
                             case 3: alarmEnabled=true;beepFire=true;beepMotion=true;break;
                         }
-                        Call<Validation> setAlarmCall = APIService.service.setAlarmConfig("testing",alarmEnabled,beepMotion,beepFire);
+                        Call<Validation> setAlarmCall = APIService.service.setAlarmConfig(Config.getPrivateKey(),alarmEnabled,beepMotion,beepFire);
                         setAlarmCall.enqueue(new Callback<Validation>() {
                             @Override
                             public void onResponse(Call<Validation> call, Response<Validation> response) {

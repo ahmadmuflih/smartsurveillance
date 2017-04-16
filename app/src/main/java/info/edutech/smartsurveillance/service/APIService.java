@@ -1,10 +1,14 @@
 package info.edutech.smartsurveillance.service;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import info.edutech.smartsurveillance.MyApplication;
 import info.edutech.smartsurveillance.app.Config;
+import info.edutech.smartsurveillance.model.CaptureService;
 import info.edutech.smartsurveillance.model.UserService;
 import info.edutech.smartsurveillance.model.Validation;
 import info.edutech.smartsurveillance.model.ValidationAlarm;
@@ -45,6 +49,9 @@ public interface APIService {
     @POST("getuser.php")
     Call<UserService> getUsers(@Field("private_key") String private_key);
 
+    @FormUrlEncoded
+    @POST("getcapture.php")
+    Call<CaptureService> getCaptures(@Field("private_key") String private_key);
 
     @FormUrlEncoded
     @POST("config/config_camera.php")
@@ -70,14 +77,28 @@ public interface APIService {
     @POST("adduser.php")
     Call<Validation> addUser(@Field("private_key") String private_key, @Field("name") String name, @Field("phone_number") String phoneNumber);
 
+    @FormUrlEncoded
+    @POST("alarm.php")
+    Call<Validation> setAlarm(@Field("private_key") String private_key, @Field("alarm_number") String alarmNumber, @Field("action") String action);
+
+    @FormUrlEncoded
+    @POST("lock.php")
+    Call<Validation> setLock(@Field("private_key") String private_key, @Field("action") String action);
+
+    @FormUrlEncoded
+    @POST("ultrasonic.php")
+    Call<Validation> askImage(@Field("private_key") String private_key);
     /*
     @FormUrlEncoded
     @POST("gettrending.php")
     Call<PostResults> getTrending(@Field("latitude") String latitude, @Field("longitude") String longitude, @Field("api_key") String api_key);
     */
+    Gson gson = new GsonBuilder()
+            .setDateFormat("yyyy-MM-dd HH:mm:ss")
+            .create();
     Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(Config.getBaseUrl())
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build();
     APIService service = retrofit.create(APIService.class);
 
