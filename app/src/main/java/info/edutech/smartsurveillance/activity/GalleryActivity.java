@@ -108,18 +108,23 @@ public class GalleryActivity extends AppCompatActivity implements ImageAdapter.O
                     CaptureService captureResponse = response.body();
                     if(captureResponse.getStatus().equals("success")){
                         final List<Capture> captures = captureResponse.getData();
-                        realm.executeTransactionAsync(new Realm.Transaction() {
-                            @Override
-                            public void execute(Realm realm) {
-                                realm.copyToRealmOrUpdate(captures);
-                            }
-                        }, new Realm.Transaction.OnSuccess(){
+                        if(captures.size()!=0) {
+                            realm.executeTransactionAsync(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    realm.copyToRealmOrUpdate(captures);
 
-                            @Override
-                            public void onSuccess() {
+                                }
+                            }, new Realm.Transaction.OnSuccess() {
 
-                            }
-                        });
+                                @Override
+                                public void onSuccess() {
+                                    setImageView(captures.get(0));
+                                    imageAdapter.notifyDataSetChanged();
+                                    imageAdapter.setDisplays(0);
+                                }
+                            });
+                        }
                     }
                     else{
                         Toast.makeText(getApplicationContext(), captureResponse.getError(), Toast.LENGTH_SHORT).show();
@@ -143,12 +148,14 @@ public class GalleryActivity extends AppCompatActivity implements ImageAdapter.O
         if(file.exists()){
             Picasso.with(getApplicationContext())
                     .load(file)
+                    .fit()
                     .into(imageView);
         }
         else{
             Picasso.with(getApplicationContext())
                     .load(BASE_URL+capture.getUrl())
                     .placeholder(R.drawable.loading)
+                    .fit()
                     .into(imageView);
         }
         txtDate.setText(capture.getDate().toString());

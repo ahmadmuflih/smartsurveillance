@@ -49,7 +49,7 @@ public class ImageAdapter extends RealmRecyclerViewAdapter<Capture,ImageAdapter.
         setDisplays(0);
     }
 
-    private void setDisplays(int position){
+    public void setDisplays(int position){
         displays = new ArrayList<>();
         for(int i = 0; i < getItemCount(); i++){
             if(i==position)

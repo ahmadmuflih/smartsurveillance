@@ -20,6 +20,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
@@ -85,9 +86,9 @@ public interface APIService {
     @POST("lock.php")
     Call<Validation> setLock(@Field("private_key") String private_key, @Field("action") String action);
 
-    @FormUrlEncoded
-    @POST("ultrasonic.php")
-    Call<Validation> askImage(@Field("private_key") String private_key);
+
+    @GET("ultrasonic.php")
+    Call<Validation> askImage(@Query("private_key") String private_key,@Query("type") String type);
     /*
     @FormUrlEncoded
     @POST("gettrending.php")

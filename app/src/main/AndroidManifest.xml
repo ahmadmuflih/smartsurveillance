@@ -24,7 +24,7 @@
         </activity>
         <activity
             android:name=".activity.GalleryActivity"
-            android:label="Gallery"></activity>
+            android:label="Gallery" />
         <!-- Firebase Notifications -->
         <service android:name=".service.MyFirebaseMessagingService">
             <intent-filter>
@@ -38,7 +38,8 @@
         </service>
         <!-- ./Firebase Notifications -->
 
-        <activity android:name=".activity.SMSSettingActivity"></activity>
+        <activity android:name=".activity.SMSSettingActivity" />
+        <activity android:name=".StartActivity"></activity>
     </application>
 
 </manifest>

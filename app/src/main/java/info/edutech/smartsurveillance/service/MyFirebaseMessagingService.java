@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import info.edutech.smartsurveillance.activity.GalleryActivity;
+import info.edutech.smartsurveillance.activity.MainActivity;
 import info.edutech.smartsurveillance.app.Config;
 import info.edutech.smartsurveillance.model.Capture;
 import info.edutech.smartsurveillance.util.NotificationUtils;
@@ -40,7 +41,7 @@ import io.realm.RealmResults;
  * www.androidhive.info
  */
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
-    private final String url = "http://192.168.43.215/firebasepushnotification/";
+    private final String url = Config.getBaseUrl();
     private static final String TAG = MyFirebaseMessagingService.class.getSimpleName();
 
     private NotificationUtils notificationUtils;
@@ -97,14 +98,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             boolean isBackground = data.getBoolean("is_background");
             String imageUrl = url+data.getString("image");
             String timestamp = data.getString("timestamp");
-            JSONObject payload = new JSONObject(data.getString("payload"));
-            saveToRealm(payload,type);
+
+
 
             Log.e(TAG, "type: " + type);
             Log.e(TAG, "title: " + title);
             Log.e(TAG, "message: " + message);
             Log.e(TAG, "isBackground: " + isBackground);
-            Log.e(TAG, "payload: " + payload.toString());
             Log.e(TAG, "imageUrl: " + imageUrl);
             Log.e(TAG, "timestamp: " + timestamp);
 
@@ -121,19 +121,25 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 notificationUtils.playNotificationSound();
             } else {
                 // app is in background, show the notification in notification tray
-                Intent resultIntent = new Intent(getApplicationContext(), GalleryActivity.class);
-                resultIntent.putExtra("message", message);
+
 
                 // check for image attachment
-                if (TextUtils.isEmpty(imageUrl)) {
-                    showNotificationMessage(getApplicationContext(), title, message, timestamp, resultIntent);
+                if (TextUtils.isEmpty(imageUrl)){
+                    Intent resultIntent = new Intent(getApplicationContext(), MainActivity.class);
+                    resultIntent.putExtra("message", message);
+                    if(type.equals("flame")){
+                        showNotificationMessage(getApplicationContext(), title, message, timestamp, resultIntent);
+                    }
                 } else {
+                    Intent resultIntent = new Intent(getApplicationContext(), GalleryActivity.class);
+                    resultIntent.putExtra("message", message);
                     // image is present, show notification with image
                     if (imageUrl != null && imageUrl.length() > 4 && Patterns.WEB_URL.matcher(imageUrl).matches()) {
                         final Bitmap bitmap = getBitmapFromURL(imageUrl);
                         if (bitmap != null) {
                             if(type.equals("capture")) {
                                 Log.e(TAG, "Capturing");
+                                JSONObject payload = new JSONObject(data.getString("payload"));
                                 final int id = payload.getInt("id");
                                 final String url = payload.getString("url");
                                 final String imageName = payload.getString("imageName");

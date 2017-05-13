@@ -154,7 +154,6 @@ public class MainActivity extends AppCompatActivity
     public void displayFragment(int id){
         fragment = null;
         if (id == R.id.nav_home) {
-            getSupportActionBar().setTitle("Home");
             fragment = new HomeFragment();
         } else if (id == R.id.nav_settings) {
             getSupportActionBar().setTitle("Settings");

@@ -4,7 +4,7 @@ package info.edutech.smartsurveillance.app;
  * Created by Baso on 2/10/2017.
  */
 public class Config {
-    private static String IP_ADDRESS = "http://192.168.0.106/smartsurveillance/";
+    private static String IP_ADDRESS = "http://192.168.43.201/smartsurveillance/";
     private static String DOMAIN = "edutechteam.tk/smartsurveillance/";
     private static String WIFI_NAME = "";
     private static String TOKEN = "token";

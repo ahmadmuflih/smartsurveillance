@@ -1,0 +1,22 @@
+<tabs xmlns:android="http://schemas.android.com/apk/res/android">
+    <tab
+        id="@+id/button1"
+        icon="@drawable/ic_gas"
+        title="Gas"/>
+    <tab
+        id="@+id/button2"
+        icon="@drawable/ic_sms"
+        title="SMS"/>
+    <tab
+        id="@+id/button3"
+        icon="@drawable/ic_lock"
+        title="Lock"/>
+    <tab
+        id="@+id/button4"
+        icon="@drawable/ic_camera"
+        title="Camera"/>
+    <tab
+        id="@+id/button5"
+        icon="@drawable/ic_alarm"
+        title="Alarm"/>
+</tabs>

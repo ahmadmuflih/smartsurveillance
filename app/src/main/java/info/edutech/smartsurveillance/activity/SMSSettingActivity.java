@@ -65,11 +65,7 @@ public class SMSSettingActivity extends AppCompatActivity {
         textSMSManusia = (EditText) findViewById(R.id.input_sms_manusia);
         btnSimpan = (Button) findViewById(R.id.btn_simpan);
 
-        SMSApi = Preferences.getBooleanPreferences("sms_api",true,getApplicationContext());
-        SMSManusia = Preferences.getBooleanPreferences("sms_manusia",true,getApplicationContext());
 
-        isiSMSApi = Preferences.getStringPreferences("isi_sms_api","",getApplicationContext());
-        isiSMSManusia = Preferences.getStringPreferences("isi_sms_manusia","",getApplicationContext());
 
 
 
@@ -213,6 +209,7 @@ public class SMSSettingActivity extends AppCompatActivity {
                 if(response.isSuccessful()) {
                     Validation data = response.body();
                     if (data.getStatus().equals("success")) {
+                        Toast.makeText(SMSSettingActivity.this, "Perubahan berhasil disimpan!", Toast.LENGTH_SHORT).show();
                         Preferences.setBooleanPreferences("sms_api",sendWhenFire,getApplicationContext());
                         Preferences.setBooleanPreferences("sms_manusia",sendWhenMotion,getApplicationContext());
                         Preferences.setStringPreferences("isi_sms_api",smsFire,getApplicationContext());
@@ -235,6 +232,11 @@ public class SMSSettingActivity extends AppCompatActivity {
     }
 
     private void setSMS(){
+        SMSApi = Preferences.getBooleanPreferences("sms_api",true,getApplicationContext());
+        SMSManusia = Preferences.getBooleanPreferences("sms_manusia",true,getApplicationContext());
+
+        isiSMSApi = Preferences.getStringPreferences("isi_sms_api","",getApplicationContext());
+        isiSMSManusia = Preferences.getStringPreferences("isi_sms_manusia","",getApplicationContext());
         checkSMSApi.setChecked(SMSApi);
         textSMSApi.setEnabled(SMSApi);
         checkSMSManusia.setChecked(SMSManusia);
