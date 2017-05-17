@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -40,6 +41,7 @@ public class HomeFragment extends Fragment {
     Realm realm;
     private DatabaseReference mFirebaseDatabase;
     private FirebaseDatabase mFirebaseInstance;
+    TextView txtStatus;
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -62,7 +64,7 @@ public class HomeFragment extends Fragment {
 
         syncUser();
         hardwareStateChangeListener();
-
+        txtStatus = (TextView)view.findViewById(R.id.txtStatus);
         mBottomBar = (BottomBar) view.findViewById(R.id.bottomBar);
         mBottomBar.setDefaultTab(R.id.button3);
         final BottomBarTab tab = mBottomBar.getTabWithId(R.id.button4);
@@ -75,24 +77,28 @@ public class HomeFragment extends Fragment {
 
                     case R.id.button1:
                         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Gas Status");
+                        txtStatus.setText(getResources().getText(R.string.status_gas));
                         if(gasFragment==null)
                             gasFragment = new GasFragment();
                         fragment=gasFragment;
                         break;
                     case R.id.button2:
                         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Send SMS");
+                        txtStatus.setText(getResources().getText(R.string.status_sms));
                         if(smsFragment==null)
                             smsFragment = new SMSFragment();
                         fragment=smsFragment;
                         break;
                     case R.id.button3:
                         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Lock");
+                        txtStatus.setText(getResources().getText(R.string.status_lock));
                         if(lockFragment==null)
                             lockFragment = new LockFragment();
                         fragment=lockFragment;
                         break;
                     case R.id.button4:
                         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Camera");
+                        txtStatus.setText(getResources().getText(R.string.status_camera));
                         if(cameraFragment==null)
                             cameraFragment = new CameraFragment();
                         fragment=cameraFragment;
@@ -100,6 +106,7 @@ public class HomeFragment extends Fragment {
                         break;
                     case R.id.button5:
                         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Alarm");
+                        txtStatus.setText(getResources().getText(R.string.status_alarm));
                         if(alarmFragment==null)
                             alarmFragment = new AlarmFragment();
                         fragment=alarmFragment;

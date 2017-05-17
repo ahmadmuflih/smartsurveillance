@@ -45,7 +45,7 @@ public class GalleryActivity extends AppCompatActivity implements ImageAdapter.O
     private TextView txtRegId,txtDate;
     private ImageView imageView;
     private RecyclerView recyclerView;
-    private final String BASE_URL=Config.getBaseUrl();
+    private final String BASE_URL=Config.getBaseUrl(getApplicationContext());
     Realm realm;
     ImageAdapter imageAdapter;
     @Override

@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        FirebaseMessaging.getInstance().subscribeToTopic(Config.TOPIC_GLOBAL);
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -161,6 +161,11 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_about) {
             getSupportActionBar().setTitle("About");
             fragment = new AboutFragment();
+        }
+        else if (id == R.id.nav_logut) {
+            Preferences.setBooleanPreferences("login",false,getApplicationContext());
+            startActivity(new Intent(this,LoginActivity.class));
+            finish();
         }
 
 

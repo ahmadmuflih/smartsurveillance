@@ -40,7 +40,7 @@ import retrofit2.Response;
 public class SettingsFragment extends Fragment implements View.OnClickListener {
     CardView btnGeneral, btnNotif, btnKamera, btnLock, btnSms, btnAlarm;
     TextView textSeekbar;
-    EditText textNama, textHP;
+    EditText textNama, textHP,textToken;
     SeekBar seekBar;
 
     Switch alarmSwitch,notifSwitch;
@@ -52,7 +52,6 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
     private RadioGroup radioGroup;
     private RadioButton radioHigh, radioStandart, radioLow;
-    private final String BASE_URL= Config.getBaseUrl();
 
 
     AlertDialog lockDialog,cameraDialog,alarmDialog,notifDialog, generalDialog;
@@ -461,6 +460,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         editGeneral = inflater.inflate(R.layout.dialog_general,null);
         textNama = (EditText) editGeneral.findViewById(R.id.input_nama);
         textHP = (EditText) editGeneral.findViewById(R.id.input_hp);
+        textToken = (EditText) editGeneral.findViewById(R.id.input_token);
 
         generalDialog = new AlertDialog.Builder(getActivity())
                 .setTitle("Atur Informasi Pribadi")
@@ -512,8 +512,10 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             case R.id.btn_general:
                 String nama = Preferences.getStringPreferences("nama","",getActivity());
                 String no_hp = Preferences.getStringPreferences("no_hp","",getActivity());
+                String token = Preferences.getStringPreferences("token","",getActivity());
                 textNama.setText(nama);
                 textHP.setText(no_hp);
+                textToken.setText(token);
                 generalDialog.show();
 
                 break;

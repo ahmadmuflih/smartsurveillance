@@ -13,7 +13,6 @@
             android:layout_height="wrap_content"
             android:hint="Token"
             android:textColor="#CC000000"
-            android:text="sA7JnaP2K1"
             android:enabled="false"/>
 
     </android.support.design.widget.TextInputLayout>

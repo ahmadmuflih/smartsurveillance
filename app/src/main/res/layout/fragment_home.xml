@@ -10,10 +10,10 @@
         android:background="#9905BAA8"
         android:padding="16dp">
         <TextView
+            android:id="@+id/txtStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textStyle="italic"
-            android:text="Send SMS to contacts nor a phone number"
             android:gravity="center"/>
 
     </LinearLayout>

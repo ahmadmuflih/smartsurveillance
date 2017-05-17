@@ -9,4 +9,9 @@
     <string name="unlock">Your house is unlocked!</string>
     <string name="gas_safe">GAS SAFE</string>
     <string name="gas_leak">GAS LEAK</string>
+    <string name="status_gas">Check gas status on your kitchen</string>
+    <string name="status_sms">Send SMS to contacts nor a phone number</string>
+    <string name="status_lock">Lock or unlock your door\'s lock</string>
+    <string name="status_camera">Take a picture or check gallery</string>
+    <string name="status_alarm">Activate or deactivate alarms</string>
 </resources>

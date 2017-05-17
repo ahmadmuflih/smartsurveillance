@@ -41,7 +41,7 @@ import io.realm.RealmResults;
  * www.androidhive.info
  */
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
-    private final String url = Config.getBaseUrl();
+    private final String url = Config.getBaseUrl(getApplicationContext());
     private static final String TAG = MyFirebaseMessagingService.class.getSimpleName();
 
     private NotificationUtils notificationUtils;

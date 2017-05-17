@@ -43,7 +43,7 @@ public class ImageAdapter extends RealmRecyclerViewAdapter<Capture,ImageAdapter.
     public ImageAdapter(@Nullable OrderedRealmCollection<Capture> data, Context mContext,OnPhotoSelectedListener onPhotoSelectedListener) {
         super(data, true);
         setHasStableIds(true);
-        this.BASE_URL= Config.getBaseUrl();
+        this.BASE_URL= Config.getBaseUrl(mContext);
         this.onPhotoSelectedListener = onPhotoSelectedListener;
         this.mContext = mContext;
         setDisplays(0);

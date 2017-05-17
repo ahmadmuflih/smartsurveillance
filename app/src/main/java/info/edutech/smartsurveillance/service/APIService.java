@@ -13,6 +13,7 @@ import info.edutech.smartsurveillance.model.UserService;
 import info.edutech.smartsurveillance.model.Validation;
 import info.edutech.smartsurveillance.model.ValidationAlarm;
 import info.edutech.smartsurveillance.model.ValidationSMS;
+import info.edutech.smartsurveillance.model.ValidationUser;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -30,6 +31,11 @@ import retrofit2.http.Query;
  * Created by Baso on 11/12/2016.
  */
 public interface APIService {
+
+    @FormUrlEncoded
+    @POST("login.php")
+    Call<ValidationUser> login(@Field("phone_number") String phone_number, @Field("password") String password);
+
     @FormUrlEncoded
     @POST("config/getcameraconfig.php")
     Call<Validation> getCameraConfig(@Field("private_key") String private_key);
@@ -89,16 +95,13 @@ public interface APIService {
 
     @GET("ultrasonic.php")
     Call<Validation> askImage(@Query("private_key") String private_key,@Query("type") String type);
-    /*
-    @FormUrlEncoded
-    @POST("gettrending.php")
-    Call<PostResults> getTrending(@Field("latitude") String latitude, @Field("longitude") String longitude, @Field("api_key") String api_key);
-    */
+
+
     Gson gson = new GsonBuilder()
             .setDateFormat("yyyy-MM-dd HH:mm:ss")
             .create();
     Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl(Config.getBaseUrl())
+            .baseUrl(Config.getBaseUrl(MyApplication.getAppContext()))
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build();
     APIService service = retrofit.create(APIService.class);
