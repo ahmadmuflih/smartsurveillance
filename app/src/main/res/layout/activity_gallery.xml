@@ -9,7 +9,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="240dp">
-    <ImageView
+    <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/foto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

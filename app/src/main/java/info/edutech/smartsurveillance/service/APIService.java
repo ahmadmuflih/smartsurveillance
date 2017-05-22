@@ -37,6 +37,14 @@ public interface APIService {
     Call<ValidationUser> login(@Field("phone_number") String phone_number, @Field("password") String password);
 
     @FormUrlEncoded
+    @POST("register.php")
+    Call<Validation> register(@Field("name") String name, @Field("phone_number") String phoneNumber, @Field("password") String password);
+
+    @FormUrlEncoded
+    @POST("updateuser.php")
+    Call<Validation> updateUser(@Field("private_key") String private_key,@Field("id") int id,@Field("password") String password,@Field("name") String name, @Field("phone_number") String phoneNumber, @Field("new_password") String newPassword);
+
+    @FormUrlEncoded
     @POST("config/getcameraconfig.php")
     Call<Validation> getCameraConfig(@Field("private_key") String private_key);
 

@@ -1,6 +1,7 @@
 package info.edutech.smartsurveillance.fragment;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -42,6 +43,7 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.menu_capture:
                 (view.findViewById(R.id.menu_capture)).setEnabled(false);
+                (view.findViewById(R.id.layout_capture)).setBackgroundColor(Color.parseColor("#AAECECEC"));
                 Call<Validation> captureCall = APIService.service.askImage(Config.getPrivateKey(),"2");
                 captureCall.enqueue(new Callback<Validation>() {
                     @Override
@@ -54,12 +56,14 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
                                 Toast.makeText(getActivity(), data.getError(), Toast.LENGTH_SHORT).show();
                         }
                         (view.findViewById(R.id.menu_capture)).setEnabled(true);
+                        (view.findViewById(R.id.layout_capture)).setBackgroundColor(Color.WHITE);
                     }
 
                     @Override
                     public void onFailure(Call<Validation> call, Throwable t) {
                         //Toast.makeText(getActivity(), "Failed to call server!", Toast.LENGTH_SHORT).show();
                         (view.findViewById(R.id.menu_capture)).setEnabled(true);
+                        (view.findViewById(R.id.layout_capture)).setBackgroundColor(Color.WHITE);
                     }
                 });
                 break;

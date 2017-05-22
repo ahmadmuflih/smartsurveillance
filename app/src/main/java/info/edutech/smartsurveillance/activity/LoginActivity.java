@@ -14,7 +14,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.messaging.FirebaseMessaging;
+
 import info.edutech.smartsurveillance.R;
+import info.edutech.smartsurveillance.app.Config;
 import info.edutech.smartsurveillance.model.DataUser;
 import info.edutech.smartsurveillance.model.ValidationUser;
 import info.edutech.smartsurveillance.service.APIService;
@@ -54,6 +57,8 @@ public class LoginActivity extends AppCompatActivity {
         coorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
         txtPhone = (EditText)findViewById(R.id.txtPhone);
         txtPassword = (EditText) findViewById(R.id.txtPassword);
+
+        FirebaseMessaging.getInstance().unsubscribeFromTopic(Config.TOPIC_GLOBAL);
     }
     public void register(View view){
         startActivityForResult(new Intent(this,RegisterActivity.class),REGISTER_RESULT);
@@ -82,6 +87,7 @@ public class LoginActivity extends AppCompatActivity {
                             Preferences.setStringPreferences("nama",data.getName(),getApplicationContext());
                             Preferences.setStringPreferences("no_hp",data.getPhoneNumber(),getApplicationContext());
                             Preferences.setIntPreferences("id",Integer.parseInt(data.getId()),getApplicationContext());
+                            Preferences.setStringPreferences("private_key",data.getPrivateKey(),getApplicationContext());
                             Preferences.setBooleanPreferences("login",true,getApplicationContext());
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
                             finish();

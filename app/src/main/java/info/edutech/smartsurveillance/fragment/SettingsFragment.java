@@ -8,6 +8,7 @@ import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -38,9 +39,9 @@ import retrofit2.Response;
  * Created by Baso on 10/8/2016.
  */
 public class SettingsFragment extends Fragment implements View.OnClickListener {
-    CardView btnGeneral, btnNotif, btnKamera, btnLock, btnSms, btnAlarm;
+    CardView btnGeneral, btnPassword,btnNotif, btnKamera, btnLock, btnSms, btnAlarm;
     TextView textSeekbar;
-    EditText textNama, textHP,textToken;
+    EditText textNama, textHP,textToken,textPassword,textOldPassword,textNewPassword;
     SeekBar seekBar;
 
     Switch alarmSwitch,notifSwitch;
@@ -48,13 +49,15 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     private int alarmValue=3;
     private int notifValue=3;
 
-    View editLock,editCamera, editAlarm, editNotif, editGeneral;
+    View editLock,editCamera, editAlarm, editNotif, editGeneral,confirmPassword,editPassword;
 
     private RadioGroup radioGroup;
     private RadioButton radioHigh, radioStandart, radioLow;
 
 
-    AlertDialog lockDialog,cameraDialog,alarmDialog,notifDialog, generalDialog;
+    AlertDialog lockDialog,cameraDialog,alarmDialog,notifDialog, generalDialog,confirmPasswordDialog,passwordDialog;
+
+    String nama, no_telp;
     public SettingsFragment() {
         // Required empty public constructor
     }
@@ -71,6 +74,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
         btnGeneral = (CardView) view.findViewById(R.id.btn_general);
+        btnPassword = (CardView)view.findViewById(R.id.btn_password);
         btnNotif = (CardView) view.findViewById(R.id.btn_notif);
         btnKamera = (CardView) view.findViewById(R.id.btn_kamera);
         btnLock = (CardView) view.findViewById(R.id.btn_lock);
@@ -78,6 +82,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         btnAlarm = (CardView) view.findViewById(R.id.btn_alarm);
 
         btnGeneral.setOnClickListener(this);
+        btnPassword.setOnClickListener(this);
         btnNotif.setOnClickListener(this);
         btnLock.setOnClickListener(this);
         btnSms.setOnClickListener(this);
@@ -471,16 +476,151 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                         generalDialog.dismiss();
                     }
                 })
-                .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Save", null)
+                .create();
+        generalDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                Button bSave = generalDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                bSave.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        nama = textNama.getText().toString().trim();
+                        no_telp = textHP.getText().toString().trim();
+                        if(nama.equals("") || no_telp.equals(""))
+                            Toast.makeText(getActivity(), "Name or phone number can not be empty!", Toast.LENGTH_SHORT).show();
+                        else if(no_telp.length()<10)
+                            Toast.makeText(getActivity(), "Your phone number is invalid", Toast.LENGTH_SHORT).show();
+                        else {
+                            generalDialog.dismiss();
+                            confirmPasswordDialog.show();
+                        }
+                    }
+                });
+            }
+        });
+        /*------------ Confirm -------------*/
+        confirmPassword = inflater.inflate(R.layout.dialog_confirm_password,null);
+        textPassword = (EditText) confirmPassword.findViewById(R.id.input_password);
+
+        confirmPasswordDialog = new AlertDialog.Builder(getActivity())
+                .setTitle("Konfirmasi Password")
+                .setView(confirmPassword)
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Preferences.setStringPreferences("nama",textNama.getText().toString(),getActivity());
-                        Preferences.setStringPreferences("no_hp",textHP.getText().toString(),getActivity());
-                        ((MainActivity)getActivity()).setProfil(textNama.getText().toString(),textHP.getText().toString());
+                        generalDialog.dismiss();
                     }
                 })
+                .setPositiveButton("Save", null)
                 .create();
+        confirmPasswordDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                textPassword.setText("");
+                Button bSave = confirmPasswordDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                bSave.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String key = Config.getPrivateKey();
+                        int id = Preferences.getIntPreferences("id","",getActivity());
+                        String password = textPassword.getText().toString();
+                        if(password.equals("")){
+                            Toast.makeText(getActivity(), "Password can not be empty!", Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            Call<Validation> updateUserCall = APIService.service.updateUser(key, id, password, nama, no_telp, null);
+                            updateUserCall.enqueue(new Callback<Validation>() {
+                                @Override
+                                public void onResponse(Call<Validation> call, Response<Validation> response) {
+                                    if (response.isSuccessful()) {
+                                        Validation data = response.body();
+                                        if (data.getStatus().equals("success")) {
 
+                                            Preferences.setStringPreferences("nama",textNama.getText().toString(),getActivity());
+                                            Preferences.setStringPreferences("no_hp",textHP.getText().toString(),getActivity());
+                                            ((MainActivity)getActivity()).setProfil(textNama.getText().toString(),textHP.getText().toString());
+                                            Toast.makeText(getActivity(), "Account Information has successfully changed", Toast.LENGTH_SHORT).show();
+                                            confirmPasswordDialog.dismiss();
+                                        } else {
+                                            Toast.makeText(getActivity(), data.getError(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    } else {
+
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<Validation> call, Throwable t) {
+                                    Toast.makeText(getActivity(), "Failed! Check your internet connection!", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        });
+        /*------------ Password -------------*/
+        editPassword = inflater.inflate(R.layout.dialog_password,null);
+        textOldPassword = (EditText) editPassword.findViewById(R.id.input_old_password);
+        textNewPassword = (EditText) editPassword.findViewById(R.id.input_new_password);
+
+        passwordDialog = new AlertDialog.Builder(getActivity())
+                .setTitle("Ganti Password")
+                .setView(editPassword)
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        generalDialog.dismiss();
+                    }
+                })
+                .setPositiveButton("Save", null)
+                .create();
+        passwordDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                Button bSave = passwordDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                bSave.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String key = Config.getPrivateKey();
+                        int id = Preferences.getIntPreferences("id","",getActivity());
+                        String password = textOldPassword.getText().toString();
+                        String newPassword = textNewPassword.getText().toString();
+                        if(password.equals("") || newPassword.equals("")){
+                            Toast.makeText(getActivity(), "Password can not be empty!", Toast.LENGTH_SHORT).show();
+                        }
+                        else if(newPassword.length()<6){
+                            Toast.makeText(getActivity(), "New password should contain at least 6 characters!", Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            Call<Validation> updateUserCall = APIService.service.updateUser(key, id, password, null, null, newPassword);
+                            updateUserCall.enqueue(new Callback<Validation>() {
+                                @Override
+                                public void onResponse(Call<Validation> call, Response<Validation> response) {
+                                    if (response.isSuccessful()) {
+                                        Validation data = response.body();
+                                        if (data.getStatus().equals("success")) {
+                                            Toast.makeText(getActivity(), "Password has successfully changed", Toast.LENGTH_SHORT).show();
+                                            passwordDialog.dismiss();
+                                        } else {
+                                            Toast.makeText(getActivity(), data.getError(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    } else {
+
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<Validation> call, Throwable t) {
+                                    Toast.makeText(getActivity(), "Failed! Check your internet connection!", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        });
         return view;
     }
 
@@ -518,6 +658,11 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 textToken.setText(token);
                 generalDialog.show();
 
+                break;
+            case R.id.btn_password:
+                textOldPassword.setText("");
+                textNewPassword.setText("");
+                passwordDialog.show();
                 break;
             case R.id.btn_notif:
                 notifValue = Preferences.getIntPreferences("notif","setting",getActivity());

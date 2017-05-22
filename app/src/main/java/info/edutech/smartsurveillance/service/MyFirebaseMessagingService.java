@@ -28,11 +28,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import info.edutech.smartsurveillance.MyApplication;
 import info.edutech.smartsurveillance.activity.GalleryActivity;
 import info.edutech.smartsurveillance.activity.MainActivity;
 import info.edutech.smartsurveillance.app.Config;
 import info.edutech.smartsurveillance.model.Capture;
 import info.edutech.smartsurveillance.util.NotificationUtils;
+import info.edutech.smartsurveillance.util.Preferences;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -41,7 +43,7 @@ import io.realm.RealmResults;
  * www.androidhive.info
  */
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
-    private final String url = Config.getBaseUrl(getApplicationContext());
+    private final String url = Config.getBaseUrl(MyApplication.getAppContext());
     private static final String TAG = MyFirebaseMessagingService.class.getSimpleName();
 
     private NotificationUtils notificationUtils;
@@ -121,14 +123,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 notificationUtils.playNotificationSound();
             } else {
                 // app is in background, show the notification in notification tray
-
-
+                int stateNotif = Preferences.getIntPreferences("notif","setting",getApplicationContext());
                 // check for image attachment
                 if (TextUtils.isEmpty(imageUrl)){
                     Intent resultIntent = new Intent(getApplicationContext(), MainActivity.class);
                     resultIntent.putExtra("message", message);
                     if(type.equals("flame")){
-                        showNotificationMessage(getApplicationContext(), title, message, timestamp, resultIntent);
+                        if(stateNotif==1||stateNotif==3)
+                            showNotificationMessage(getApplicationContext(), title, message, timestamp, resultIntent);
                     }
                 } else {
                     Intent resultIntent = new Intent(getApplicationContext(), GalleryActivity.class);
@@ -170,6 +172,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                             }
                         }
                         Log.e(TAG, "Sending Notification");
+
+                        if(stateNotif==2||stateNotif==3)
                         showNotificationMessageWithBigImage(getApplicationContext(), title, message, timestamp, resultIntent, bitmap);
                     }
 

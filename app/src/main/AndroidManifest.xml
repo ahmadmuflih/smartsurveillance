@@ -15,9 +15,7 @@
         <activity
             android:name=".activity.MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".activity.GalleryActivity"
             android:label="Gallery" />
@@ -37,22 +35,23 @@
         <activity android:name=".activity.SMSSettingActivity" />
         <activity
             android:name=".activity.StartActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            >
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            </activity>
+        </activity>
         <activity
             android:name=".activity.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.TokenActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activity.RegisterActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".activity.RegisterActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".activity.AboutActivity"></activity>
     </application>
 
 </manifest>

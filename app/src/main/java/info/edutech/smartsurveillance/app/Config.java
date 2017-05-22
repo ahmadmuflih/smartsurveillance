@@ -1,7 +1,9 @@
 package info.edutech.smartsurveillance.app;
 
 import android.content.Context;
+import android.util.Log;
 
+import info.edutech.smartsurveillance.MyApplication;
 import info.edutech.smartsurveillance.util.Preferences;
 
 /**
@@ -11,8 +13,7 @@ public class Config {
 
     private static String WIFI_NAME = "";
     private static String TOKEN = "token";
-    private static String PRIVATE_KEY = "8yTLJV9VYU";
-    private static String MAIN_SERVER = "http://192.168.0.104/raspi/";
+    private static String MAIN_SERVER = "http://192.168.7.107/raspi/";
     // global topic to receive app wide push notifications
     public static final String TOPIC_GLOBAL = "global";
 
@@ -27,11 +28,12 @@ public class Config {
     public static final String SHARED_PREF = "ah_firebase";
 
     public static String getBaseUrl(Context context){
-
-        return Preferences.getStringPreferences("server",null,context);
+        String url =  Preferences.getStringPreferences("server",null,context);
+        Log.d("URL","URLNYA : "+url);
+        return url;
     }
     public static String getPrivateKey(){
-        return PRIVATE_KEY;
+        return Preferences.getStringPreferences("private_key",null, MyApplication.getAppContext());
     }
 
     public static String getToken() {

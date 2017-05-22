@@ -28,8 +28,14 @@ import info.edutech.smartsurveillance.fragment.AboutFragment;
 import info.edutech.smartsurveillance.fragment.HomeFragment;
 import info.edutech.smartsurveillance.R;
 import info.edutech.smartsurveillance.fragment.SettingsFragment;
+import info.edutech.smartsurveillance.model.DataServer;
+import info.edutech.smartsurveillance.model.ValidationServer;
+import info.edutech.smartsurveillance.service.ServerService;
 import info.edutech.smartsurveillance.util.NotificationUtils;
 import info.edutech.smartsurveillance.util.Preferences;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -67,6 +73,32 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         };
+
+        Call<ValidationServer> callServer = ServerService.service.verify(Preferences.getStringPreferences("token","",getApplicationContext()));
+        callServer.enqueue(new Callback<ValidationServer>() {
+            @Override
+            public void onResponse(Call<ValidationServer> call, Response<ValidationServer> response) {
+                if(response.isSuccessful()){
+                    ValidationServer serverResponse = response.body();
+                    if(serverResponse.getStatus().equals("success")){
+                        DataServer data = serverResponse.getData();
+                        Preferences.setStringPreferences("token",data.getToken(),getApplicationContext());
+                        Preferences.setStringPreferences("server",data.getIpAddress(),getApplicationContext());
+                        Preferences.setStringPreferences("domain",data.getDomain(),getApplicationContext());
+                        Preferences.setStringPreferences("server_name",data.getNama(),getApplicationContext());
+                    }
+                    else{
+                    }
+                }
+                else{
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ValidationServer> call, Throwable t) {
+
+            }
+        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(

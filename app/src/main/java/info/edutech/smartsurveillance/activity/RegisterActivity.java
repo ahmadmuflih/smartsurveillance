@@ -11,8 +11,14 @@ import android.support.v7.app.AppCompatDelegate;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import info.edutech.smartsurveillance.R;
+import info.edutech.smartsurveillance.model.Validation;
+import info.edutech.smartsurveillance.service.APIService;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RegisterActivity extends AppCompatActivity {
     CoordinatorLayout coorLayout;
@@ -45,13 +51,13 @@ public class RegisterActivity extends AppCompatActivity {
         txtName = (EditText)findViewById(R.id.txtName);
     }
 
-    public void register(View view){
+    public void register(final View view){
         String phone = txtPhone.getText().toString().trim();
         String name = txtName.getText().toString().trim();
         String password = txtPassword.getText().toString();
         if(phone.equals("") || name.equals("") || password.equals("")){
             Snackbar snackbar = Snackbar
-                    .make(coorLayout, "Phone number or name or password can not be blank!", Snackbar.LENGTH_LONG);
+                    .make(coorLayout, "Phone number or name or password can not be empty!", Snackbar.LENGTH_LONG);
             snackbar.show();
             if(phone.equals(""))
                 txtPhone.requestFocus();
@@ -60,10 +66,53 @@ public class RegisterActivity extends AppCompatActivity {
             else if(password.equals(""))
                 txtPassword.requestFocus();
         }
+        else if(phone.length()<10){
+            Snackbar snackbar = Snackbar
+                    .make(coorLayout, "Phone number is not valid!", Snackbar.LENGTH_LONG);
+            snackbar.show();
+            txtPhone.requestFocus();
+        }
+        else if(password.length()<6){
+            Snackbar snackbar = Snackbar
+                    .make(coorLayout, "Password should contain at least 6 characters", Snackbar.LENGTH_LONG);
+            snackbar.show();
+            txtPassword.requestFocus();
+        }
         else{
-            Intent intent=new Intent();
-            setResult(0001,intent);
-            finish();
+            view.setEnabled(false);
+            Call<Validation> registerCall = APIService.service.register(name,phone,password);
+            registerCall.enqueue(new Callback<Validation>() {
+                @Override
+                public void onResponse(Call<Validation> call, Response<Validation> response) {
+                    if(response.isSuccessful()){
+                        Validation serverResponse = response.body();
+                        if(serverResponse.getStatus().equals("success")){
+                            Toast.makeText(RegisterActivity.this, "Register is successful!", Toast.LENGTH_SHORT).show();
+                            Intent intent=new Intent();
+                            setResult(0001,intent);
+                            finish();
+                        }
+                        else{
+                            Snackbar snackbar = Snackbar
+                                    .make(coorLayout, serverResponse.getError(), Snackbar.LENGTH_LONG);
+                            snackbar.show();
+                            view.setEnabled(true);
+                        }
+                    }
+                    else{
+                        Snackbar snackbar = Snackbar
+                                .make(coorLayout, "Response failed!", Snackbar.LENGTH_LONG);
+                        snackbar.show();
+                        view.setEnabled(true);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Validation> call, Throwable t) {
+
+                }
+            });
+
         }
     }
 }

@@ -17,8 +17,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.chrisbanes.photoview.PhotoView;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import info.edutech.smartsurveillance.MyApplication;
 import info.edutech.smartsurveillance.R;
 import info.edutech.smartsurveillance.adapter.ImageAdapter;
 import info.edutech.smartsurveillance.app.Config;
@@ -43,9 +45,9 @@ public class GalleryActivity extends AppCompatActivity implements ImageAdapter.O
     private static final String TAG = GalleryActivity.class.getSimpleName();
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     private TextView txtRegId,txtDate;
-    private ImageView imageView;
+    private PhotoView imageView;
     private RecyclerView recyclerView;
-    private final String BASE_URL=Config.getBaseUrl(getApplicationContext());
+    private final String BASE_URL=Config.getBaseUrl(MyApplication.getAppContext());
     Realm realm;
     ImageAdapter imageAdapter;
     @Override
@@ -60,7 +62,7 @@ public class GalleryActivity extends AppCompatActivity implements ImageAdapter.O
 
         txtRegId = (TextView) findViewById(R.id.txt_reg_id);
         txtDate = (TextView) findViewById(R.id.tanggal);
-        imageView = (ImageView) findViewById(R.id.foto);
+        imageView = (PhotoView) findViewById(R.id.foto);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
         realm = Realm.getDefaultInstance();
