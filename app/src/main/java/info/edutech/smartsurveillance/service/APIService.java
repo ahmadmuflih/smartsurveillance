@@ -12,6 +12,7 @@ import info.edutech.smartsurveillance.model.CaptureService;
 import info.edutech.smartsurveillance.model.UserService;
 import info.edutech.smartsurveillance.model.Validation;
 import info.edutech.smartsurveillance.model.ValidationAlarm;
+import info.edutech.smartsurveillance.model.ValidationLock;
 import info.edutech.smartsurveillance.model.ValidationSMS;
 import info.edutech.smartsurveillance.model.ValidationUser;
 import okhttp3.MultipartBody;
@@ -58,7 +59,7 @@ public interface APIService {
 
     @FormUrlEncoded
     @POST("config/getlockconfig.php")
-    Call<Validation> getLockConfig(@Field("private_key") String private_key);
+    Call<ValidationLock> getLockConfig(@Field("private_key") String private_key);
 
     @FormUrlEncoded
     @POST("getuser.php")
@@ -82,7 +83,7 @@ public interface APIService {
 
     @FormUrlEncoded
     @POST("config/config_lock.php")
-    Call<Validation> setLockConfig(@Field("private_key") String private_key, @Field("duration") int duration);
+    Call<Validation> setLockConfig(@Field("private_key") String private_key, @Field("duration") int duration,@Field("auto_lock") boolean autoLock);
 
     @FormUrlEncoded
     @POST("send_sms.php")
@@ -91,6 +92,14 @@ public interface APIService {
     @FormUrlEncoded
     @POST("adduser.php")
     Call<Validation> addUser(@Field("private_key") String private_key, @Field("name") String name, @Field("phone_number") String phoneNumber);
+
+    @FormUrlEncoded
+    @POST("edituser.php")
+    Call<Validation> editUser(@Field("private_key") String private_key, @Field("id") int id,@Field("name") String name, @Field("phone_number") String phoneNumber);
+
+    @FormUrlEncoded
+    @POST("deleteuser.php")
+    Call<Validation> deleteUser(@Field("private_key") String private_key, @Field("id") int id);
 
     @FormUrlEncoded
     @POST("alarm.php")

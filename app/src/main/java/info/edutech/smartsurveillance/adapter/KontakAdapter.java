@@ -1,6 +1,7 @@
 package info.edutech.smartsurveillance.adapter;
 
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +20,7 @@ import io.realm.RealmRecyclerViewAdapter;
 public class KontakAdapter extends RealmRecyclerViewAdapter<User,KontakAdapter.Holder> {
 
     private OnKontakSelectedListener onKontakSelectedListener;
-
+    public User selectedContact;
     public KontakAdapter(OrderedRealmCollection<User> data) {
         super(data,true);
         //this.onKontakSelectedListener = onKontakSelectedListener;
@@ -50,16 +51,27 @@ public class KontakAdapter extends RealmRecyclerViewAdapter<User,KontakAdapter.H
         else{
             type="Non Owner";
         }
+
         holder.type.setText(type);
-        /*
+
+        if(selectedContact!= null && selectedContact.getId() == kontak.getId()){
+            holder.itemView.setBackgroundColor(Color.GRAY);
+        }
+        else{
+            holder.itemView.setBackgroundColor(Color.TRANSPARENT);
+        }
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(onKontakSelectedListener != null)
+                if(onKontakSelectedListener != null) {
                     onKontakSelectedListener.onSelected(kontak);
+                    selectedContact = kontak;
+                    notifyDataSetChanged();
+                }
             }
         });
-        */
+
     }
 
     @Override

@@ -36,9 +36,9 @@
                         android:id="@+id/txtPhone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableLeft="@drawable/ic_phone"
                         android:hint="Phone Number"
                         android:inputType="phone"
+                        android:drawableLeft="@drawable/ic_phone"
                         android:drawablePadding="8dp"
                         android:singleLine="true"/>
 
@@ -52,8 +52,8 @@
                     android:id="@+id/txtName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ic_account"
                     android:hint="Name"
+                    android:drawableLeft="@drawable/ic_account"
                     android:inputType="text"
                     android:drawablePadding="8dp"
                     android:singleLine="true"/>
@@ -67,8 +67,8 @@
                         android:id="@+id/txtPassword"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableLeft="@drawable/ic_lock2"
                         android:hint="Password"
+                        android:drawableLeft="@drawable/ic_lock"
                         android:inputType="textPassword"
                         android:drawablePadding="8dp"
                         android:singleLine="true"/>

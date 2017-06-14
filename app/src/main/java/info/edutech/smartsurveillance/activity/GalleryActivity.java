@@ -5,13 +5,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -38,6 +44,9 @@ import retrofit2.Response;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.List;
 
 public class GalleryActivity extends AppCompatActivity implements ImageAdapter.OnPhotoSelectedListener {
@@ -50,6 +59,9 @@ public class GalleryActivity extends AppCompatActivity implements ImageAdapter.O
     private final String BASE_URL=Config.getBaseUrl(MyApplication.getAppContext());
     Realm realm;
     ImageAdapter imageAdapter;
+    RealmResults<Capture> capture;
+    Capture selectedItem;
+    Menu menu;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,9 +78,15 @@ public class GalleryActivity extends AppCompatActivity implements ImageAdapter.O
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
         realm = Realm.getDefaultInstance();
-        RealmResults<Capture> capture = realm.where(Capture.class).findAllSorted("id", Sort.DESCENDING);
+        capture = realm.where(Capture.class).findAllSorted("id", Sort.DESCENDING);
 
-        imageAdapter = new ImageAdapter(capture,getApplicationContext(),this);
+        // Display
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int width = displayMetrics.widthPixels;
+        //
+
+        imageAdapter = new ImageAdapter(capture,getApplicationContext(),this,width);
         recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(),3));
         recyclerView.setAdapter(imageAdapter);
         recyclerView.setFocusable(false);
@@ -81,7 +99,9 @@ public class GalleryActivity extends AppCompatActivity implements ImageAdapter.O
                 if (intent.getAction().equals(Config.REGISTRATION_COMPLETE)) {
                     // gcm successfully registered
                     // now subscribe to `global` topic to receive app wide notifications
-                    FirebaseMessaging.getInstance().subscribeToTopic(Config.TOPIC_GLOBAL);
+                    String token = Config.getToken();
+                    if(token!=null)
+                        FirebaseMessaging.getInstance().subscribeToTopic(token);
 
                     displayFirebaseRegId();
 
@@ -95,8 +115,9 @@ public class GalleryActivity extends AppCompatActivity implements ImageAdapter.O
                 }
             }
         };
-        if(capture.size()!=0)
+        if(capture.size()!=0) {
             setImageView(capture.get(0));
+        }
         displayFirebaseRegId();
         syncCapture();
     }
@@ -110,6 +131,7 @@ public class GalleryActivity extends AppCompatActivity implements ImageAdapter.O
                     CaptureService captureResponse = response.body();
                     if(captureResponse.getStatus().equals("success")){
                         final List<Capture> captures = captureResponse.getData();
+
                         if(captures.size()!=0) {
                             realm.executeTransactionAsync(new Realm.Transaction() {
                                 @Override
@@ -121,6 +143,13 @@ public class GalleryActivity extends AppCompatActivity implements ImageAdapter.O
 
                                 @Override
                                 public void onSuccess() {
+                                    capture = realm.where(Capture.class).findAllSorted("id", Sort.DESCENDING);
+                                    if(capture!=null&capture.size()>0){
+                                        menu.findItem(R.id.share).setVisible(true);
+                                    }
+                                    else{
+                                        menu.findItem(R.id.share).setVisible(false);
+                                    }
                                     setImageView(captures.get(0));
                                     imageAdapter.notifyDataSetChanged();
                                     imageAdapter.setDisplays(0);
@@ -146,18 +175,20 @@ public class GalleryActivity extends AppCompatActivity implements ImageAdapter.O
     }
     
     private void setImageView(Capture capture){
+        selectedItem = capture;
         File file = new File(getApplicationContext().getFilesDir().getAbsolutePath() + "/" + capture.getImageName());
         if(file.exists()){
             Picasso.with(getApplicationContext())
                     .load(file)
                     .fit()
+                    .placeholder(R.drawable.loading)
                     .into(imageView);
         }
         else{
             Picasso.with(getApplicationContext())
                     .load(BASE_URL+capture.getUrl())
-                    .placeholder(R.drawable.loading)
                     .fit()
+                    .placeholder(R.drawable.loading)
                     .into(imageView);
         }
         txtDate.setText(capture.getDate().toString());
@@ -176,9 +207,59 @@ public class GalleryActivity extends AppCompatActivity implements ImageAdapter.O
             txtRegId.setText("Firebase Reg Id is not received yet!");
     }
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        this.menu = menu;
+        getMenuInflater().inflate(R.menu.menu_gallery, menu);
+        if(capture!=null && capture.size()!=0) {
+            setImageView(capture.get(0));
+        }
+        else{
+            menu.findItem(R.id.share).setVisible(false);
+        }
+        return true;
+    }
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
             onBackPressed();    //Call the back button's method
+            return true;
+        }
+        if (id == R.id.share) {
+            Toast.makeText(getApplicationContext(), "Share : "+selectedItem.getImageName(), Toast.LENGTH_SHORT).show();
+            try {
+                String path = getFilesDir().getAbsolutePath() + "/" + selectedItem.getImageName();
+                File f=new File(path);
+                if(f.exists()) {
+                    Bitmap bitmapToShare = BitmapFactory.decodeStream(new FileInputStream(f));
+                    File pictureStorage = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+                    File noMedia = new File(pictureStorage, ".nomedia");
+                    if (!noMedia.exists())
+                        noMedia.mkdirs();
+                    File file = new File(noMedia, "shared_image.png");
+                    try {
+                        FileOutputStream out = new FileOutputStream(file);
+                        bitmapToShare.compress(Bitmap.CompressFormat.JPEG, 90, out);
+                        out.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    Intent shareIntent = new Intent();
+                    shareIntent.setAction(Intent.ACTION_SEND);
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, "Gambar pada "+selectedItem.getDate().toString());
+                    shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+                    shareIntent.setType("image/jpeg");
+                    startActivity(Intent.createChooser(shareIntent, "Share to.."));
+                }
+                else{
+                    Toast.makeText(GalleryActivity.this, "Wait.. image is being downloaded", Toast.LENGTH_SHORT).show();
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+
             return true;
         }
 
@@ -209,6 +290,7 @@ public class GalleryActivity extends AppCompatActivity implements ImageAdapter.O
 
     @Override
     public void onSelected(Capture capture) {
+
         setImageView(capture);
     }
 

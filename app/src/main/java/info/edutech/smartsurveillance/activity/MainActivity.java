@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.design.widget.NavigationView;
@@ -14,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity
     private String fragmentStatus;
     TextView textNama, textNoHP;
     Fragment fragment;
+    HomeFragment homeFragment;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +52,9 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        FirebaseMessaging.getInstance().subscribeToTopic(Config.TOPIC_GLOBAL);
+        String token = Config.getToken();
+        if(token!=null)
+            FirebaseMessaging.getInstance().subscribeToTopic(token);
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -58,7 +63,9 @@ public class MainActivity extends AppCompatActivity
                 if (intent.getAction().equals(Config.REGISTRATION_COMPLETE)) {
                     // gcm successfully registered
                     // now subscribe to `global` topic to receive app wide notifications
-                    FirebaseMessaging.getInstance().subscribeToTopic(Config.TOPIC_GLOBAL);
+                    String token = Config.getToken();
+                    if(token!=null)
+                        FirebaseMessaging.getInstance().subscribeToTopic(token);
 
 
 
@@ -66,14 +73,21 @@ public class MainActivity extends AppCompatActivity
                     // new push notification is received
 
                     String message = intent.getStringExtra("message");
-
+                    String type = intent.getStringExtra("type");
+                    if(type.equals("flame")) {
+                        homeFragment.selectTab(R.id.button1);
+                    }
+                    else if(type.equals("capture")) {
+                        homeFragment.selectTab(R.id.button4);
+                        startActivity(new Intent(getApplicationContext(),GalleryActivity.class));
+                    }
                     Toast.makeText(getApplicationContext(), "Push notification: " + message, Toast.LENGTH_LONG).show();
 
 
                 }
             }
         };
-
+        Log.d("SYNC SERVER","Start syncing");
         Call<ValidationServer> callServer = ServerService.service.verify(Preferences.getStringPreferences("token","",getApplicationContext()));
         callServer.enqueue(new Callback<ValidationServer>() {
             @Override
@@ -86,17 +100,20 @@ public class MainActivity extends AppCompatActivity
                         Preferences.setStringPreferences("server",data.getIpAddress(),getApplicationContext());
                         Preferences.setStringPreferences("domain",data.getDomain(),getApplicationContext());
                         Preferences.setStringPreferences("server_name",data.getNama(),getApplicationContext());
+                        Log.d("SYNC SERVER", "Sync successful. IP Address : "+Config.getBaseUrl(getApplicationContext()));
                     }
                     else{
+                        Log.e("SYNC SERVER","Sync Failed : "+serverResponse.getError());
                     }
                 }
                 else{
+                    Log.e("SYNC SERVER","Sync Failed : Not successful");
                 }
             }
 
             @Override
             public void onFailure(Call<ValidationServer> call, Throwable t) {
-
+                Log.e("SYNC SERVER","Sync Failed : No connection");
             }
         });
 
@@ -111,11 +128,36 @@ public class MainActivity extends AppCompatActivity
         textNama = (TextView)hView.findViewById(R.id.text_nama);
         textNoHP = (TextView)hView.findViewById(R.id.text_no_hp);
         navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setCheckedItem(R.id.nav_home);
         displayFragment(R.id.nav_home);
+
+
+        Intent i = getIntent();
+        final String type = i.getStringExtra("type");
+        if(type!=null) {
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable()
+            {
+                @Override
+                public void run() {
+                    if (type.equals("flame")) {
+
+                        homeFragment.selectTab(R.id.button1);
+                    }
+                    else if (type.equals("capture")) {
+                        homeFragment.selectTab(R.id.button4);
+                        startActivity(new Intent(getApplicationContext(), GalleryActivity.class));
+                    }
+                }
+            }, 100 );
+
+        }
+
 
         String nama = Preferences.getStringPreferences("nama","",getApplicationContext());
         String no_hp = Preferences.getStringPreferences("no_hp","",getApplicationContext());
         setProfil(nama,no_hp);
+        Log.d("URL","Url : "+Preferences.getStringPreferences("server","",getApplicationContext()));
     }
 
     @Override
@@ -181,12 +223,16 @@ public class MainActivity extends AppCompatActivity
         displayFragment(id);
 
 
+
         return true;
     }
     public void displayFragment(int id){
         fragment = null;
         if (id == R.id.nav_home) {
-            fragment = new HomeFragment();
+
+            if(homeFragment==null)
+                homeFragment = new HomeFragment();
+            fragment = homeFragment;
         } else if (id == R.id.nav_settings) {
             getSupportActionBar().setTitle("Settings");
             fragment = new SettingsFragment();

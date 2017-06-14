@@ -28,6 +28,7 @@ import info.edutech.smartsurveillance.model.User;
 import info.edutech.smartsurveillance.model.UserService;
 import info.edutech.smartsurveillance.service.APIService;
 import io.realm.Realm;
+import io.realm.RealmResults;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -42,6 +43,7 @@ public class HomeFragment extends Fragment {
     private DatabaseReference mFirebaseDatabase;
     private FirebaseDatabase mFirebaseInstance;
     TextView txtStatus;
+    BottomBarTab tab;
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -67,54 +69,12 @@ public class HomeFragment extends Fragment {
         txtStatus = (TextView)view.findViewById(R.id.txtStatus);
         mBottomBar = (BottomBar) view.findViewById(R.id.bottomBar);
         mBottomBar.setDefaultTab(R.id.button3);
-        final BottomBarTab tab = mBottomBar.getTabWithId(R.id.button4);
+        tab = mBottomBar.getTabWithId(R.id.button4);
         tab.setBadgeCount(3);
         mBottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
-                Fragment fragment = null;
-                switch (tabId){
-
-                    case R.id.button1:
-                        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Gas Status");
-                        txtStatus.setText(getResources().getText(R.string.status_gas));
-                        if(gasFragment==null)
-                            gasFragment = new GasFragment();
-                        fragment=gasFragment;
-                        break;
-                    case R.id.button2:
-                        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Send SMS");
-                        txtStatus.setText(getResources().getText(R.string.status_sms));
-                        if(smsFragment==null)
-                            smsFragment = new SMSFragment();
-                        fragment=smsFragment;
-                        break;
-                    case R.id.button3:
-                        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Lock");
-                        txtStatus.setText(getResources().getText(R.string.status_lock));
-                        if(lockFragment==null)
-                            lockFragment = new LockFragment();
-                        fragment=lockFragment;
-                        break;
-                    case R.id.button4:
-                        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Camera");
-                        txtStatus.setText(getResources().getText(R.string.status_camera));
-                        if(cameraFragment==null)
-                            cameraFragment = new CameraFragment();
-                        fragment=cameraFragment;
-                        tab.removeBadge();
-                        break;
-                    case R.id.button5:
-                        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Alarm");
-                        txtStatus.setText(getResources().getText(R.string.status_alarm));
-                        if(alarmFragment==null)
-                            alarmFragment = new AlarmFragment();
-                        fragment=alarmFragment;
-                        break;
-                }
-                if(fragment!=null){
-                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame,fragment).commit();
-                }
+                setDisplay(tabId);
             }
         });
         return view;
@@ -136,6 +96,8 @@ public class HomeFragment extends Fragment {
                         realm.executeTransactionAsync(new Realm.Transaction() {
                             @Override
                             public void execute(Realm realm) {
+                                RealmResults<User> result = realm.where(User.class).findAll();
+                                result.deleteAllFromRealm();
                                 realm.copyToRealmOrUpdate(users);
                             }
                         }, new Realm.Transaction.OnSuccess(){
@@ -151,7 +113,7 @@ public class HomeFragment extends Fragment {
                     }
                 }
                 else{
-                    Toast.makeText(getActivity(), "Gagal!", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(), "Gagal!", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -160,6 +122,53 @@ public class HomeFragment extends Fragment {
                 //Toast.makeText(getActivity(), "Failed! Check your internet connection!", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+    public void setDisplay(int id){
+        Fragment fragment = null;
+        switch (id){
+            case R.id.button1:
+                ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Gas Status");
+                txtStatus.setText(getResources().getText(R.string.status_gas));
+                if(gasFragment==null)
+                    gasFragment = new GasFragment();
+                fragment=gasFragment;
+                break;
+            case R.id.button2:
+                ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Send SMS");
+                txtStatus.setText(getResources().getText(R.string.status_sms));
+                if(smsFragment==null)
+                    smsFragment = new SMSFragment();
+                fragment=smsFragment;
+                break;
+            case R.id.button3:
+                ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Lock");
+                txtStatus.setText(getResources().getText(R.string.status_lock));
+                if(lockFragment==null)
+                    lockFragment = new LockFragment();
+                fragment=lockFragment;
+                break;
+            case R.id.button4:
+                ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Camera");
+                txtStatus.setText(getResources().getText(R.string.status_camera));
+                if(cameraFragment==null)
+                    cameraFragment = new CameraFragment();
+                fragment=cameraFragment;
+                tab.removeBadge();
+                break;
+            case R.id.button5:
+                ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Alarm");
+                txtStatus.setText(getResources().getText(R.string.status_alarm));
+                if(alarmFragment==null)
+                    alarmFragment = new AlarmFragment();
+                fragment=alarmFragment;
+                break;
+        }
+        if(fragment!=null){
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame,fragment).commit();
+        }
+    }
+    public void selectTab(int id){
+        mBottomBar.selectTabWithId(id);
     }
     void hardwareStateChangeListener() {
         mFirebaseDatabase.child("flame").addValueEventListener(new ValueEventListener() {
@@ -192,4 +201,5 @@ public class HomeFragment extends Fragment {
             }
         });
     }
+
 }

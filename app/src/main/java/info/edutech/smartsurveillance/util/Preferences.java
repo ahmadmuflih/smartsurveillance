@@ -44,7 +44,7 @@ public class Preferences {
         editor.putBoolean(prefName, value);
         editor.apply();
     }
-    public static Boolean   getBooleanPreferences(String prefName,boolean defaultValue, Context context){
+    public static Boolean getBooleanPreferences(String prefName,boolean defaultValue, Context context){
         SharedPreferences preferences = context.getSharedPreferences(SHARED_PREF, Context.MODE_PRIVATE);
         return preferences.getBoolean(prefName, defaultValue);
     }

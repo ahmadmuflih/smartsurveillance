@@ -11,12 +11,14 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -37,14 +39,16 @@ import retrofit2.Response;
 public class SMSSettingActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     CheckBox checkSMSApi, checkSMSManusia;
-    EditText textSMSApi, textSMSManusia, textNama,textHP;
+    EditText textSMSApi, textSMSManusia, textNama,textHP,textNamaEdit,textHPEdit;
 
     boolean SMSApi, SMSManusia;
     String isiSMSApi, isiSMSManusia;
-
+    KontakAdapter kontakAdapter;
     Button btnSimpan;
-    AlertDialog addContactDialog;
-
+    AlertDialog addContactDialog,deleteContactDialog,editContactDialog;
+    LinearLayout layoutKontak, layoutSMS, settingSMS;
+    Menu menu;
+    User selectedContact;
     private static final int RESULT_PICK_CONTACT = 001;
 
     Realm realm;
@@ -58,16 +62,35 @@ public class SMSSettingActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setTitle("Pengaturan SMS");
 
+        layoutKontak = (LinearLayout)findViewById(R.id.layout_kontak);
+        layoutSMS = (LinearLayout)findViewById(R.id.layout_sms);
+        settingSMS = (LinearLayout)findViewById(R.id.setting_sms);
+
+        layoutKontak.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(recyclerView.getVisibility()==View.VISIBLE)
+                    recyclerView.setVisibility(View.GONE);
+                else
+                    recyclerView.setVisibility(View.VISIBLE);
+            }
+        });
+        layoutSMS.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(settingSMS.getVisibility() == View.VISIBLE)
+                    settingSMS.setVisibility(View.GONE);
+                else
+                    settingSMS.setVisibility(View.VISIBLE);
+            }
+        });
+
         recyclerView = (RecyclerView)findViewById(R.id.list_user);
         checkSMSApi = (CheckBox) findViewById(R.id.check_sms_api);
         checkSMSManusia = (CheckBox) findViewById(R.id.check_sms_manusia);
         textSMSApi = (EditText) findViewById(R.id.input_sms_api);
         textSMSManusia = (EditText) findViewById(R.id.input_sms_manusia);
         btnSimpan = (Button) findViewById(R.id.btn_simpan);
-
-
-
-
 
         setSMS();
 
@@ -102,6 +125,14 @@ public class SMSSettingActivity extends AppCompatActivity {
         textHP = (EditText) addContactLayout.findViewById(R.id.input_hp);
         LinearLayout pickContact = (LinearLayout)addContactLayout.findViewById(R.id.select_contact);
 
+        addContactLayout.findViewById(R.id.btn_add_contact).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent contactPickerIntent = new Intent(Intent.ACTION_PICK,
+                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+                startActivityForResult(contactPickerIntent, RESULT_PICK_CONTACT);
+            }
+        });
         pickContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -134,15 +165,122 @@ public class SMSSettingActivity extends AppCompatActivity {
                     }
                 })
                 .create();
+        /*---- */
+        final View editContactLayout = getLayoutInflater().inflate(R.layout.dialog_edit_contact,null);
+        textNamaEdit = (EditText) editContactLayout.findViewById(R.id.input_nama_edit);
+        textHPEdit = (EditText) editContactLayout.findViewById(R.id.input_hp_edit);
 
+
+
+        editContactDialog = new AlertDialog.Builder(this)
+                .setTitle("Edit Kontak")
+                .setView(editContactLayout)
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        editContactDialog.dismiss();
+                    }
+                })
+                .setPositiveButton("Edit", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        final String nama = textNamaEdit.getText().toString().trim();
+                        final String no_hp = textHPEdit.getText().toString().trim();
+                        if(nama.equals("") || no_hp.equals("")){
+                            Toast.makeText(SMSSettingActivity.this, "Nama atau no hp tidak boleh kosong!", Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                            Call<Validation> editCall = APIService.service.editUser(Config.getPrivateKey(),selectedContact.getId(),nama,no_hp);
+                            editCall.enqueue(new Callback<Validation>() {
+                                @Override
+                                public void onResponse(Call<Validation> call, Response<Validation> response) {
+                                    if(response.isSuccessful()){
+                                        Validation data = response.body();
+                                        if(data.getStatus().equals("success")){
+                                            User newUser = new User(selectedContact.getId(),nama,no_hp,2);
+                                            realm.beginTransaction();
+                                            realm.copyToRealmOrUpdate(newUser);
+                                            realm.commitTransaction();
+                                            Toast.makeText(SMSSettingActivity.this, "Kontak berhasil diubah!", Toast.LENGTH_SHORT).show();
+                                        }else{
+                                            Toast.makeText(SMSSettingActivity.this, data.getError(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<Validation> call, Throwable t) {
+                                    Toast.makeText(getApplicationContext(), "Failed! Check your internet connection!", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }
+                })
+                .create();
+        deleteContactDialog = new AlertDialog.Builder(this)
+                .setTitle("Hapus Kontak")
+                .setMessage("Are you sure want to delete this contact?")
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteContactDialog.dismiss();
+                    }
+                })
+                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Call<Validation> deleteCall = APIService.service.deleteUser(Config.getPrivateKey(),selectedContact.getId());
+                        deleteCall.enqueue(new Callback<Validation>() {
+                            @Override
+                            public void onResponse(Call<Validation> call, Response<Validation> response) {
+                                if(response.isSuccessful()){
+                                    Validation data = response.body();
+                                    if(data.getStatus().equals("success")){
+                                        realm.executeTransaction(new Realm.Transaction() {
+                                            @Override
+                                            public void execute(Realm realm) {
+                                                RealmResults<User> result = realm.where(User.class).equalTo("id",selectedContact.getId()).findAll();
+                                                result.deleteAllFromRealm();
+                                                kontakAdapter.selectedContact=null;
+                                                kontakAdapter.notifyDataSetChanged();
+                                            }
+                                        });
+                                        Toast.makeText(SMSSettingActivity.this, "Kontak berhasil dihapus!", Toast.LENGTH_SHORT).show();
+                                    }else{
+                                        Toast.makeText(SMSSettingActivity.this, data.getError(), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Validation> call, Throwable t) {
+                                Toast.makeText(getApplicationContext(), "Failed! Check your internet connection!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                })
+                .create();
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        this.menu = menu;
+        getMenuInflater().inflate(R.menu.menu_sms_setting, menu);
+        return true;
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
             onBackPressed();    //Call the back button's method
             return true;
         }
-
+        else if(id == R.id.edit){
+            editContactDialog.show();
+        }
+        else if(id == R.id.delete){
+            deleteContactDialog.show();
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -194,9 +332,25 @@ public class SMSSettingActivity extends AppCompatActivity {
         results.addAll(users.subList(0, users.size()));
         Log.e("REALM","SIZE : "+results.size());
         */
-        KontakAdapter imageAdapter = new KontakAdapter(users);
+        kontakAdapter = new KontakAdapter(users);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(imageAdapter);
+        recyclerView.setAdapter(kontakAdapter);
+        kontakAdapter.setOnKontakSelectedListener(new KontakAdapter.OnKontakSelectedListener() {
+            @Override
+            public void onSelected(User kontak) {
+                selectedContact = kontak;
+                textHPEdit.setText(kontak.getPhoneNumber());
+                textNamaEdit.setText(kontak.getName());
+                if(kontak.getType()==1) {
+                    menu.findItem(R.id.delete).setVisible(false);
+                    menu.findItem(R.id.edit).setVisible(false);
+                }
+                else{
+                    menu.findItem(R.id.delete).setVisible(true);
+                    menu.findItem(R.id.edit).setVisible(true);
+                }
+            }
+        });
     }
 
     private void saveSMS(){

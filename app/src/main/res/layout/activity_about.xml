@@ -1,82 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="8dp"
     android:orientation="vertical"
+    android:background="@color/white"
     tools:context="info.edutech.smartsurveillance.activity.AboutActivity">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:text="Developer"
-        android:layout_gravity="center"
-        android:textColor="@color/colorPrimary"
-        android:textSize="18sp"/>
-    <android.support.v7.widget.CardView
-        android:layout_marginTop="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="8dp">
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            android:src="@drawable/baso"/>
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="Developer Team"
+            android:drawableLeft="@drawable/ic_developer"
+            android:drawablePadding="8dp"
+            android:layout_gravity="center"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp"/>
+        <android.support.v7.widget.CardView
+            android:layout_marginTop="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="16dp"
-            android:orientation="vertical">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Baso Ahmad Muflih Yunus"
-                android:textColor="@color/colorPrimary"
-                android:drawableLeft="@drawable/ic_name"
-                android:drawablePadding="8dp"
-                android:textStyle="bold"
-                android:gravity="center"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ahmadbaso97@gmail.com"
-                android:textColor="@color/colorPrimary"
-                android:drawableLeft="@drawable/ic_email"
-                android:drawablePadding="8dp"
-                android:gravity="center"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ahmadbaso97@gmail.com"
-                android:textColor="@color/colorPrimary"
-                android:drawableLeft="@drawable/ic_email"
-                android:drawablePadding="8dp"
-                android:gravity="center"/>
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:src="@drawable/baso"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="16dp"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Baso Ahmad Muflih Yunus"
+                    android:textColor="@color/colorPrimary"
+                    android:drawableLeft="@drawable/ic_name"
+                    android:drawablePadding="8dp"
+                    android:textStyle="bold"
+                    android:gravity="center"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ahmadbaso97@gmail.com"
+                    android:drawableLeft="@drawable/ic_email"
+                    android:drawablePadding="8dp"
+                    android:gravity="center"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="\@ahmaadmuflih"
+                    android:drawableLeft="@drawable/twitter"
+                    android:drawablePadding="8dp"
+                    android:gravity="center"/>
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
-    </android.support.v7.widget.CardView>
-    <android.support.v7.widget.CardView
-    android:layout_marginTop="8dp"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="8dp">
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            android:src="@drawable/irpan"/>
-
-    </LinearLayout>
-</android.support.v7.widget.CardView>
-    <android.support.v7.widget.CardView
+        </android.support.v7.widget.CardView>
+        <android.support.v7.widget.CardView
         android:layout_marginTop="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -88,8 +77,244 @@
             <de.hdodenhof.circleimageview.CircleImageView
                 android:layout_width="72dp"
                 android:layout_height="72dp"
-                android:src="@drawable/yurvan"/>
-
+                android:src="@drawable/irpan"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="16dp"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Irpan Setiadi"
+                    android:textColor="@color/colorPrimary"
+                    android:drawableLeft="@drawable/ic_name"
+                    android:drawablePadding="8dp"
+                    android:textStyle="bold"
+                    android:gravity="center"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="irpansetiadi@outlook.co.id"
+                    android:drawableLeft="@drawable/ic_email"
+                    android:drawablePadding="8dp"
+                    android:gravity="center"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="\@irpanstd"
+                    android:drawableLeft="@drawable/twitter"
+                    android:drawablePadding="8dp"
+                    android:gravity="center"/>
+            </LinearLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
-</LinearLayout>
+        <android.support.v7.widget.CardView
+            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:src="@drawable/yurvan"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="16dp"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Yurvan Igo Wibowo"
+                        android:textColor="@color/colorPrimary"
+                        android:drawableLeft="@drawable/ic_name"
+                        android:drawablePadding="8dp"
+                        android:textStyle="bold"
+                        android:gravity="center"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="yurvan160@gmail.com"
+                        android:drawableLeft="@drawable/ic_email"
+                        android:drawablePadding="8dp"
+                        android:gravity="center"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="\@YurvanIgo"
+                        android:drawableLeft="@drawable/twitter"
+                        android:drawablePadding="8dp"
+                        android:gravity="center"/>
+                </LinearLayout>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:drawableLeft="@drawable/ic_supervisor"
+            android:drawablePadding="8dp"
+            android:textStyle="bold"
+            android:text="Supervisor"
+            android:layout_gravity="center"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp"/>
+        <android.support.v7.widget.CardView
+            android:layout_marginTop="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:src="@drawable/ic_person"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:orientation="vertical"
+                    android:layout_gravity="center_vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cahyana, S.T., M.Kom."
+                        android:textColor="@color/colorPrimary"
+                        android:drawableLeft="@drawable/ic_name"
+                        android:drawablePadding="8dp"
+                        android:textStyle="bold"
+                        android:gravity="center"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="cahyana@gmail.com"
+                        android:drawableLeft="@drawable/ic_email"
+                        android:drawablePadding="8dp"
+                        android:gravity="center"/>
+                </LinearLayout>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+        <android.support.v7.widget.CardView
+            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:src="@drawable/tri_broto"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:orientation="vertical"
+                    android:layout_gravity="center_vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tri Broto Harsono, S.T., M.T."
+                        android:textColor="@color/colorPrimary"
+                        android:drawableLeft="@drawable/ic_name"
+                        android:drawablePadding="8dp"
+                        android:textStyle="bold"
+                        android:gravity="center"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="tribroto@gmail.com"
+                        android:drawableLeft="@drawable/ic_email"
+                        android:drawablePadding="8dp"
+                        android:gravity="center"/>
+                </LinearLayout>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:drawableLeft="@drawable/ic_business"
+            android:drawablePadding="8dp"
+            android:textStyle="bold"
+            android:text="Supported by"
+            android:layout_gravity="center"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp"/>
+    <LinearLayout
+        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="96dp"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="33"
+            android:gravity="center">
+            <ImageView
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:src="@drawable/logod3if"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="D3 Teknik Informatika"
+                android:textSize="11sp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="33"
+            android:gravity="center">
+            <ImageView
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:src="@drawable/logo"
+                android:background="@color/colorPrimary"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Smart Surveillance"
+                android:textSize="11sp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="33"
+            android:gravity="center">
+            <ImageView
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:src="@drawable/logoedutech"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Edu-tech Team"
+                android:textSize="11sp"/>
+        </LinearLayout>
+    </LinearLayout>
+        <TextView
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Copyright \u00a9 2016 Prodi D3 Teknik Informatika."
+            android:textSize="13sp"/>
+    </LinearLayout>
+</ScrollView>

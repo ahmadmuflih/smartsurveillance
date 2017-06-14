@@ -21,6 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.kyleduo.switchbutton.SwitchButton;
 
 
+import info.edutech.smartsurveillance.MyApplication;
 import info.edutech.smartsurveillance.R;
 import info.edutech.smartsurveillance.app.Config;
 import info.edutech.smartsurveillance.hardwarestate.Lock;
@@ -115,9 +116,13 @@ public class LockFragment extends Fragment {
                                 Validation data = response.body();
                                 if (!data.getStatus().equals("success")) {
                                     Toast.makeText(getActivity(), data.getError(), Toast.LENGTH_SHORT).show();
+                                    cekLock=false;
                                     switchLock.setChecked(!isChecked);
                                 }
                             } else {
+                                switchLock.setEnabled(true);
+                                cekLock=false;
+                                switchLock.setChecked(!isChecked);
                                 Toast.makeText(getActivity(), "Gagal!", Toast.LENGTH_SHORT).show();
                             }
                             switchLock.setEnabled(true);
@@ -126,15 +131,18 @@ public class LockFragment extends Fragment {
                         @Override
                         public void onFailure(Call<Validation> call, Throwable t) {
                             switchLock.setEnabled(true);
+                            cekLock=false;
+                            switchLock.setChecked(!isChecked);
 
-                            mFirebaseDatabase.child("lock").child("state").setValue(isChecked, new DatabaseReference.CompletionListener() {
+                            Toast.makeText(MyApplication.getAppContext(), "Gagal melakukan perintah ke server!", Toast.LENGTH_SHORT).show();
+                            /*mFirebaseDatabase.child("lock").child("state").setValue(isChecked, new DatabaseReference.CompletionListener() {
                                 @Override
                                 public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
 
 
                                 }
                             });
-
+                            */
                         }
                     });
                 }

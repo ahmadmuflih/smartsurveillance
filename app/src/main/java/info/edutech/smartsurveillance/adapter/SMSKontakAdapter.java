@@ -21,9 +21,11 @@ import io.realm.RealmBaseAdapter;
  */
 public class SMSKontakAdapter extends RealmBaseAdapter<User> {
     private ArrayList<String> numbers;
+    private ArrayList<String> names;
     public SMSKontakAdapter(@Nullable OrderedRealmCollection<User> data) {
         super(data);
         numbers = new ArrayList<>();
+        names = new ArrayList<>();
     }
 
     @Override
@@ -46,10 +48,14 @@ public class SMSKontakAdapter extends RealmBaseAdapter<User> {
             holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (isChecked)
+                    if (isChecked) {
                         numbers.add(user.getPhoneNumber());
-                    else
+                        names.add(user.getName());
+                    }
+                    else {
                         numbers.remove(user.getPhoneNumber());
+                        names.remove(user.getName());
+                    }
                 }
             });
         }
@@ -66,7 +72,22 @@ public class SMSKontakAdapter extends RealmBaseAdapter<User> {
 
     public void resetNumbers() {
         this.numbers = new ArrayList<>();
+        this.names = new ArrayList<>();
         notifyDataSetChanged();
+    }
+
+    public String getSelectedContacts() {
+        String selectedNames = "";
+        for(int i = 0; i < names.size(); i++){
+            String firstWord = names.get(i);
+            if(firstWord.contains(" ")){
+                firstWord= firstWord.substring(0, firstWord.indexOf(" "));
+            }
+            selectedNames += firstWord;
+            if(i<(names.size()-1))
+                selectedNames+= ", ";
+        }
+        return selectedNames;
     }
 
     public static class Holder extends RecyclerView.ViewHolder{

@@ -15,6 +15,7 @@
             android:background="@drawable/background_selected"
             />
         <android.support.v7.widget.CardView
+            android:id="@+id/btn_perangkat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:foreground="?android:attr/selectableItemBackground"
@@ -38,7 +39,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Perangkat IoT"
+                        android:text="Deskripsi"
                         android:textSize="16sp"
                         android:layout_marginTop="1dp"
                         android:textColor="@color/black"/>
@@ -46,7 +47,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="1dp"
-                        android:text="Informasi mengenai perangkat dan sensor yang digunakan."/>
+                        android:text="Informasi mengenai deskripsi sistem Smart Surveillance."/>
                 </LinearLayout>
             </LinearLayout>
         </android.support.v7.widget.CardView>
@@ -56,6 +57,7 @@
             android:background="@drawable/background_selected"
             />
         <android.support.v7.widget.CardView
+            android:id="@+id/btn_developer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:foreground="?android:attr/selectableItemBackground"
@@ -87,7 +89,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="1dp"
-                        android:text="Copyright \u00a9 2017 Edu-Tech Team."/>
+                        android:text="Informasi mengenai developer aplikasi Smart Surveillance"/>
                 </LinearLayout>
             </LinearLayout>
         </android.support.v7.widget.CardView>

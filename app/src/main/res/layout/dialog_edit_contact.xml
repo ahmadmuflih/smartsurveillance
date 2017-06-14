@@ -3,27 +3,6 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp">
-    <LinearLayout
-        android:id="@+id/select_contact"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        >
-        <ImageButton
-            android:id="@+id/btn_add_contact"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/ic_contacts"
-            android:background="?attr/selectableItemBackgroundBorderless"/>
-        <TextView
-            android:layout_marginLeft="8dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Pilih Kontak"
-            android:textStyle="bold"
-            android:textSize="16sp"/>
-    </LinearLayout>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
@@ -32,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
     <EditText
-        android:id="@+id/input_nama"
+        android:id="@+id/input_nama_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Nama"
@@ -44,7 +23,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <EditText
-        android:id="@+id/input_hp"
+        android:id="@+id/input_hp_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="No HP"

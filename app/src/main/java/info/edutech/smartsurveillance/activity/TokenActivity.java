@@ -2,12 +2,15 @@ package info.edutech.smartsurveillance.activity;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -48,6 +51,18 @@ public class TokenActivity extends AppCompatActivity {
         }
         coorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
         txtToken = (EditText)findViewById(R.id.txtToken);
+        /*
+        Drawable drawable;
+
+        if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            drawable = getResources().getDrawable(R.drawable.ictoken, getTheme());
+        } else {
+            drawable = VectorDrawableCompat.create(getResources(), R.drawable.ictoken, getTheme());
+        }
+
+
+        txtToken.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
+        */
     }
 
     public void verify(final View view){
@@ -73,6 +88,7 @@ public class TokenActivity extends AppCompatActivity {
                             Preferences.setStringPreferences("server",data.getIpAddress(),getApplicationContext());
                             Preferences.setStringPreferences("domain",data.getDomain(),getApplicationContext());
                             Preferences.setStringPreferences("server_name",data.getNama(),getApplicationContext());
+                            Log.d("SYNC SERVER", "Sync successful. IP Address : "+Preferences.getStringPreferences("server","",getApplicationContext()));
                             startActivity(new Intent(getApplicationContext(),LoginActivity.class));
                             finish();
                         }

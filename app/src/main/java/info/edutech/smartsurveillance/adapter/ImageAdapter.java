@@ -39,13 +39,15 @@ public class ImageAdapter extends RealmRecyclerViewAdapter<Capture,ImageAdapter.
     private ArrayList<Boolean> displays;
     private OnPhotoSelectedListener onPhotoSelectedListener;
     private String BASE_URL;
+    private int width;
 
-    public ImageAdapter(@Nullable OrderedRealmCollection<Capture> data, Context mContext,OnPhotoSelectedListener onPhotoSelectedListener) {
+    public ImageAdapter(@Nullable OrderedRealmCollection<Capture> data, Context mContext,OnPhotoSelectedListener onPhotoSelectedListener,int width) {
         super(data, true);
         setHasStableIds(true);
         this.BASE_URL= Config.getBaseUrl(mContext);
         this.onPhotoSelectedListener = onPhotoSelectedListener;
         this.mContext = mContext;
+        this.width = width/3;
         setDisplays(0);
     }
 
@@ -86,16 +88,17 @@ public class ImageAdapter extends RealmRecyclerViewAdapter<Capture,ImageAdapter.
                 Picasso.with(mContext)
                         .load(file)
                         .placeholder(R.drawable.loading)
+                        //.resize(width,width)
                         .fit()
-                        .centerCrop()
+                        //.centerCrop()
                         .noFade()
                         .into(holder.imageView);
             } else {
                 Picasso.with(mContext)
                         .load(BASE_URL + photo.getUrl())
                         .placeholder(R.drawable.loading)
-                        .resize(300,300)
-                        .centerCrop()
+                        //.resize(width,width)
+                        //.centerCrop()
                         .noFade()
                         .into(new Target() {
                             @Override

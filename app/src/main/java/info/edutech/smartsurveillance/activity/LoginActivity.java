@@ -2,9 +2,11 @@ package info.edutech.smartsurveillance.activity;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
@@ -57,8 +59,30 @@ public class LoginActivity extends AppCompatActivity {
         coorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
         txtPhone = (EditText)findViewById(R.id.txtPhone);
         txtPassword = (EditText) findViewById(R.id.txtPassword);
+        /*
+        Drawable drawable;
 
-        FirebaseMessaging.getInstance().unsubscribeFromTopic(Config.TOPIC_GLOBAL);
+        if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            drawable = getResources().getDrawable(R.drawable.ic_phone, getTheme());
+        } else {
+            drawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_phone, getTheme());
+        }
+
+        txtPhone.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
+        Drawable drawable2;
+
+        if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            drawable2 = getResources().getDrawable(R.drawable.ic_lock, getTheme());
+        } else {
+            drawable2 = VectorDrawableCompat.create(getResources(), R.drawable.ic_lock, getTheme());
+        }
+
+        txtPassword.setCompoundDrawablesWithIntrinsicBounds(drawable2, null, null, null);
+        */
+
+        String token = Config.getToken();
+        if(token!=null)
+            FirebaseMessaging.getInstance().subscribeToTopic(token);
     }
     public void register(View view){
         startActivityForResult(new Intent(this,RegisterActivity.class),REGISTER_RESULT);
@@ -109,7 +133,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<ValidationUser> call, Throwable t) {
-
+                    Toast.makeText(LoginActivity.this, "Login failed, check your internet connectionb ", Toast.LENGTH_SHORT).show();
                 }
             });
         }

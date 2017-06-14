@@ -44,7 +44,7 @@ public class CameraFragment extends Fragment implements View.OnClickListener {
             case R.id.menu_capture:
                 (view.findViewById(R.id.menu_capture)).setEnabled(false);
                 (view.findViewById(R.id.layout_capture)).setBackgroundColor(Color.parseColor("#AAECECEC"));
-                Call<Validation> captureCall = APIService.service.askImage(Config.getPrivateKey(),"2");
+                Call<Validation> captureCall = APIService.service.askImage(Config.getPrivateKey(),"1");
                 captureCall.enqueue(new Callback<Validation>() {
                     @Override
                     public void onResponse(Call<Validation> call, Response<Validation> response) {

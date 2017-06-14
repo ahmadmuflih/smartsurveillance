@@ -25,9 +25,11 @@ import info.edutech.smartsurveillance.activity.MainActivity;
 import info.edutech.smartsurveillance.activity.SMSSettingActivity;
 import info.edutech.smartsurveillance.app.Config;
 import info.edutech.smartsurveillance.model.DataAlarm;
+import info.edutech.smartsurveillance.model.DataLock;
 import info.edutech.smartsurveillance.model.DataSMS;
 import info.edutech.smartsurveillance.model.Validation;
 import info.edutech.smartsurveillance.model.ValidationAlarm;
+import info.edutech.smartsurveillance.model.ValidationLock;
 import info.edutech.smartsurveillance.model.ValidationSMS;
 import info.edutech.smartsurveillance.service.APIService;
 import info.edutech.smartsurveillance.util.Preferences;
@@ -44,7 +46,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     EditText textNama, textHP,textToken,textPassword,textOldPassword,textNewPassword;
     SeekBar seekBar;
 
-    Switch alarmSwitch,notifSwitch;
+    Switch alarmSwitch,notifSwitch,lockSwitch;
     CheckBox apiCheck, manusiaCheck,notifApi,notifManusia;
     private int alarmValue=3;
     private int notifValue=3;
@@ -114,26 +116,28 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 //Toast.makeText(getActivity(), "Gagal2", Toast.LENGTH_SHORT).show();
             }
         });
-        Call<Validation> getLockCall = APIService.service.getLockConfig(Config.getPrivateKey());
-        getLockCall.enqueue(new Callback<Validation>() {
+        Call<ValidationLock> getLockCall = APIService.service.getLockConfig(Config.getPrivateKey());
+        getLockCall.enqueue(new Callback<ValidationLock>() {
             @Override
-            public void onResponse(Call<Validation> call, Response<Validation> response) {
+            public void onResponse(Call<ValidationLock> call, Response<ValidationLock> response) {
                 if(response.isSuccessful()){
-                    Validation data = response.body();
-                    if(data.getStatus().equals("success")){
+                    ValidationLock dataLock = response.body();
+                    if(dataLock.getStatus().equals("success")){
+                        DataLock data = dataLock.getData();
                         int lockVal=0;
-                        if(data.getData()==10)
+                        if(data.getDuration()==10)
                             lockVal=1;
-                        else if(data.getData()==20)
+                        else if(data.getDuration()==20)
                             lockVal=2;
-                        else if(data.getData()==30)
+                        else if(data.getDuration()==30)
                             lockVal=3;
-                        else if(data.getData()==60)
+                        else if(data.getDuration()==60)
                             lockVal=4;
                         Preferences.setIntPreferences("lock",lockVal,getActivity());
+                        Preferences.setBooleanPreferences("auto_lock",data.getAutoLock(),getActivity());
                     }
                     else {
-                        Toast.makeText(getActivity(), data.getError(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), dataLock.getError(), Toast.LENGTH_SHORT).show();
                     }
                 }
                 else{
@@ -142,7 +146,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             }
 
             @Override
-            public void onFailure(Call<Validation> call, Throwable t) {
+            public void onFailure(Call<ValidationLock> call, Throwable t) {
                 //Toast.makeText(getActivity(), "Gagal2", Toast.LENGTH_SHORT).show();
             }
         });
@@ -206,6 +210,18 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         /*------------ Lock -------------*/
         editLock = inflater.inflate(R.layout.dialog_lock,null);
         textSeekbar = (TextView) editLock.findViewById(R.id.text_seekbar);
+        lockSwitch = (Switch)editLock.findViewById(R.id.switch_lock);
+        lockSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    lockSwitch.setText("Mengunci saat ada gerakan");
+                }
+                else{
+                    lockSwitch.setText("Tidak mengunci saat ada gerakan");
+                }
+            }
+        });
         seekBar = (SeekBar) editLock.findViewById(R.id.seekBar);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -243,8 +259,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                             case 3:lockVal=30;break;
                             case 4:lockVal=60;break;
                         }
-
-                        Call<Validation> setLockCall = APIService.service.setLockConfig(Config.getPrivateKey(),lockVal);
+                        final boolean autoLock = lockSwitch.isChecked();
+                        Call<Validation> setLockCall = APIService.service.setLockConfig(Config.getPrivateKey(),lockVal,autoLock);
                         setLockCall.enqueue(new Callback<Validation>() {
                             @Override
                             public void onResponse(Call<Validation> call, Response<Validation> response) {
@@ -252,6 +268,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                                     Validation data = response.body();
                                     if (data.getStatus().equals("success")) {
                                         Preferences.setIntPreferences("lock", seekVal, getActivity());
+                                        Preferences.setBooleanPreferences("auto_lock",autoLock,getActivity());
                                     } else {
                                         Toast.makeText(getActivity(), data.getError(), Toast.LENGTH_SHORT).show();
                                     }
@@ -687,6 +704,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 int seekbarValue = Preferences.getIntPreferences("lock","setting",getActivity());
                 seekBar.setProgress(seekbarValue);
                 setTextSeekbar(seekbarValue);
+                boolean autoLock = Preferences.getBooleanPreferences("auto_lock",true,getActivity());
+                lockSwitch.setChecked(autoLock);
                 lockDialog.show();
                 break;
         }

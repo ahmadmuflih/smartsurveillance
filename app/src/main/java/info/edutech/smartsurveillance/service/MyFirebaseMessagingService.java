@@ -116,6 +116,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 // app is in foreground, broadcast the push message
                 Intent pushNotification = new Intent(Config.PUSH_NOTIFICATION);
                 pushNotification.putExtra("message", message);
+                pushNotification.putExtra("type",type);
                 LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification);
 
                 // play notification sound
@@ -128,13 +129,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 if (TextUtils.isEmpty(imageUrl)){
                     Intent resultIntent = new Intent(getApplicationContext(), MainActivity.class);
                     resultIntent.putExtra("message", message);
+                    resultIntent.putExtra("type",type);
                     if(type.equals("flame")){
                         if(stateNotif==1||stateNotif==3)
                             showNotificationMessage(getApplicationContext(), title, message, timestamp, resultIntent);
                     }
                 } else {
-                    Intent resultIntent = new Intent(getApplicationContext(), GalleryActivity.class);
+                    Intent resultIntent = new Intent(getApplicationContext(), MainActivity.class);
                     resultIntent.putExtra("message", message);
+                    resultIntent.putExtra("type",type);
                     // image is present, show notification with image
                     if (imageUrl != null && imageUrl.length() > 4 && Patterns.WEB_URL.matcher(imageUrl).matches()) {
                         final Bitmap bitmap = getBitmapFromURL(imageUrl);

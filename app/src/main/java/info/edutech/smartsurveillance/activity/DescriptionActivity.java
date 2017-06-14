@@ -6,17 +6,16 @@ import android.view.MenuItem;
 
 import info.edutech.smartsurveillance.R;
 
-public class AboutActivity extends AppCompatActivity {
+public class DescriptionActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_about);
-
+        setContentView(R.layout.activity_description);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setTitle("About");
+        getSupportActionBar().setTitle("Deskripsi");
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

@@ -2,9 +2,11 @@ package info.edutech.smartsurveillance.activity;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
@@ -49,6 +51,35 @@ public class RegisterActivity extends AppCompatActivity {
         txtPhone = (EditText)findViewById(R.id.txtPhone);
         txtPassword = (EditText) findViewById(R.id.txtPassword);
         txtName = (EditText)findViewById(R.id.txtName);
+        /*
+        Drawable drawable;
+
+        if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            drawable = getResources().getDrawable(R.drawable.ic_phone, getTheme());
+        } else {
+            drawable = VectorDrawableCompat.create(getResources(), R.drawable.ic_phone, getTheme());
+        }
+
+        txtPhone.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
+        Drawable drawable2;
+
+        if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            drawable2 = getResources().getDrawable(R.drawable.ic_lock, getTheme());
+        } else {
+            drawable2 = VectorDrawableCompat.create(getResources(), R.drawable.ic_lock, getTheme());
+        }
+
+        txtPassword.setCompoundDrawablesWithIntrinsicBounds(drawable2, null, null, null);
+        Drawable drawable3;
+
+        if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            drawable3 = getResources().getDrawable(R.drawable.ic_account, getTheme());
+        } else {
+            drawable3 = VectorDrawableCompat.create(getResources(), R.drawable.ic_account, getTheme());
+        }
+
+        txtName.setCompoundDrawablesWithIntrinsicBounds(drawable3, null, null, null);
+        */
     }
 
     public void register(final View view){

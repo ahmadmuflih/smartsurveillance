@@ -13,7 +13,7 @@ public class Config {
 
     private static String WIFI_NAME = "";
     private static String TOKEN = "token";
-    private static String MAIN_SERVER = "http://192.168.7.107/raspi/";
+    private static String MAIN_SERVER = "http://smartsurveillance-token.hol.es/";
     // global topic to receive app wide push notifications
     public static final String TOPIC_GLOBAL = "global";
 
@@ -37,7 +37,7 @@ public class Config {
     }
 
     public static String getToken() {
-        return TOKEN;
+        return Preferences.getStringPreferences("token",null, MyApplication.getAppContext());
     }
 
     public static String getMainServer() {

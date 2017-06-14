@@ -32,7 +32,7 @@ import retrofit2.Response;
  */
 public class SMSFragment extends Fragment implements View.OnClickListener {
     AlertDialog selectContactDialog;
-    EditText phoneNumbers, smsContent;
+    EditText phoneNumbers, smsContent, selectedContacts;
     Button btnSend;
     ArrayList<String> numbers = new ArrayList<>();
     Realm realm;
@@ -50,6 +50,7 @@ public class SMSFragment extends Fragment implements View.OnClickListener {
         btnSend = (Button)v.findViewById(R.id.send_sms);
         phoneNumbers = (EditText)v.findViewById(R.id.input_hp);
         smsContent = (EditText)v.findViewById(R.id.input_sms);
+        selectedContacts = (EditText)v.findViewById(R.id.selected_contact);
 
         View selectContactLayout = getActivity().getLayoutInflater().inflate(R.layout.dialog_select_contact,null);
         RealmResults<User> users = realm.where(User.class).findAll();
@@ -63,7 +64,7 @@ public class SMSFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         numbers = adapter.getNumbers();
-
+                        selectedContacts.setText(adapter.getSelectedContacts());
                     }
                 })
                 .create();
@@ -87,7 +88,6 @@ public class SMSFragment extends Fragment implements View.OnClickListener {
                     for(int i = 0; i < jsonNumbers.size(); i++){
                         jsonNumbers.set(i, "\""+jsonNumbers.get(i)+"\"");
                     }
-                    Toast.makeText(getActivity(), jsonNumbers.toString(), Toast.LENGTH_SHORT).show();
                     Call<Validation> sendSMSCall = APIService.service.sendSMS(Config.getPrivateKey(),jsonNumbers.toString(),content);
                     sendSMSCall.enqueue(new Callback<Validation>() {
                         @Override
@@ -97,9 +97,10 @@ public class SMSFragment extends Fragment implements View.OnClickListener {
                                 if(data.getStatus().equals("success")){
                                     phoneNumbers.setText("");
                                     smsContent.setText("");
+                                    selectedContacts.setText("");
                                     adapter.resetNumbers();
                                     numbers.clear();
-                                    Toast.makeText(getActivity(), data.getError(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(), "Berhasil memproses permintaan", Toast.LENGTH_SHORT).show();
                                 }
                                 else{
                                     Toast.makeText(getActivity(), data.getError(), Toast.LENGTH_SHORT).show();

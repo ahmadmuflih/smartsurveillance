@@ -12,6 +12,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
         <LinearLayout
+            android:id="@+id/layout_kontak"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/loading"
@@ -38,6 +39,7 @@
         android:background="@null"
         android:id="@+id/list_user"/>
     <LinearLayout
+        android:id="@+id/layout_sms"
         android:layout_marginTop="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -50,6 +52,7 @@
             android:textStyle="bold"/>
     </LinearLayout>
     <LinearLayout
+        android:id="@+id/setting_sms"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
